@@ -1,0 +1,9 @@
+node_modules/
+build/
+6 april/
+dist/
+.env
+.env.local
+.DS_Store
+npm-debug.log
+yarn-error.log
