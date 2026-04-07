@@ -431,7 +431,7 @@ footer p, footer a{color:#CECECE;}
 .single-post .content-block p a:hover, .single-post .content-block a:hover;{color:var(--e-global-color-secondary);}
 .single-post .content-block .btn.btn-primary{font-size: 16px;line-height: 18px;color: #fff;background: #B12129;padding: 10px 44px 10px 40px;border-radius: 35px;border: none;transition: ease-in-out all 300ms;font-weight: 500;}
 .single-post .content-block .btn.btn-primary:hover{background: #000;}
-.single-post .content-block .post-body img{width:auto; max-width:100%; height:auto;}
+.single-post .content-block .post-body img{ max-width:100%; height:auto;}
 
 .single-post .content-block h2{font-size:2rem; font-weight:700; padding:0; margin:0 0 15px;}
 .single-post .content-block h3{font-size:2.5rem; font-weight:700; padding:0; margin:0 0 15px;}
