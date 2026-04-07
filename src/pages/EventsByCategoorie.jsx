@@ -31,6 +31,24 @@ const EventsByCategoorie = () => {
     }
   };
 
+  const getWeekDates = () => {
+  const startOfMonth = currentMonth.startOf("month");
+
+  const startDayOffset = (currentWeek - 1) * 7;
+
+  const weekStart = startOfMonth.add(startDayOffset, "day");
+
+  const days = [];
+
+  for (let i = 0; i < 7; i++) {
+    days.push(weekStart.add(i, "day"));
+  }
+
+  return days;
+};
+
+const weekDays = getWeekDates();
+
   useEffect(() => {
 
     if (!key) return;
@@ -177,13 +195,12 @@ const EventsByCategoorie = () => {
               {/* DAYS HEADER */}
 
               <div className="week-days">
-                <div>MON</div>
-                <div>TUE</div>
-                <div>WED</div>
-                <div>THU</div>
-                <div>FRI</div>
-                <div>SAT</div>
-                <div>SUN</div>
+                {weekDays.map((day, index) => (
+                  <div key={index} className="week-day">
+                    <span className="weekday">{day.format("ddd").toUpperCase()}</span>
+                    <span className="date">{day.format("DD")}</span>
+                  </div>
+                ))}
               </div>
 
 
