@@ -72,27 +72,8 @@ const SingleEvent = () => {
                 )}
 
                 <h1>{post.title}</h1>
-
-                <div
-                  className="post-body mt-3"
-                  dangerouslySetInnerHTML={{ __html: post.content }}
-                />
-
-                {/* ✅ Read More Button */}
-                {readMoreLink && (
-                  <div className="mt-4">
-                    <a
-                      href={readMoreLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="btn btn-primary"
-                    >
-                      Read More
-                    </a>
-                  </div>
-                )}
-
-                 {/* ✅ Disclaimer */}
+                
+                {/* ✅ Disclaimer */}
                 {readMoreLink && (
                   <p
                     className="text-muted mt-3"
@@ -117,6 +98,28 @@ const SingleEvent = () => {
                   </p>
                 )}
 
+                <div
+                  className="post-body mt-3"
+                  dangerouslySetInnerHTML={{ __html: post.content }}
+                />
+                
+
+                {/* ✅ Read More Button */}
+                {readMoreLink && (
+                  <div className="mt-4">
+                    <a
+                      href={readMoreLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-primary"
+                    >
+                      Read More
+                    </a>
+                  </div>
+                )}
+
+                 
+
                 {/* ✅ Share Section */}
                 <div className="share-section mt-5">
                   <h4>Share this post:</h4>
@@ -139,7 +142,27 @@ const SingleEvent = () => {
                       url={window.location.href}
                       title={post.title}
                     >
-                      <TwitterIcon size={30} round />
+                      <div
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: "50%",
+                        background: "#000",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="white"
+                      >
+                        <path d="M18.244 2H21.5l-7.19 8.22L22 22h-6.828l-5.346-7.021L3.66 22H.4l7.693-8.793L2 2h6.995l4.835 6.36L18.244 2zm-1.2 18h1.803L7.972 4H6.037l11.007 16z"/>
+                      </svg>
+                    </div>
                     </TwitterShareButton>
                     <LinkedinShareButton
                       url={window.location.href}
@@ -212,7 +235,27 @@ const SingleEvent = () => {
                     </FacebookShareButton>
 
                     <TwitterShareButton url={window.location.href} title={post.title}>
-                      <TwitterIcon size={30} round />
+                      <div
+                      style={{
+                        width: 30,
+                        height: 30,
+                        borderRadius: "50%",
+                        background: "#000",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="white"
+                      >
+                        <path d="M18.244 2H21.5l-7.19 8.22L22 22h-6.828l-5.346-7.021L3.66 22H.4l7.693-8.793L2 2h6.995l4.835 6.36L18.244 2zm-1.2 18h1.803L7.972 4H6.037l11.007 16z"/>
+                      </svg>
+                    </div>
                     </TwitterShareButton>
 
                     <LinkedinShareButton url={window.location.href} title={post.title}>
