@@ -5,264 +5,235 @@ import { useParams } from "react-router-dom";
 import Categories from "../components/Categories";
 import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
+import dayjs from "dayjs";
+import weekOfYear from "dayjs/plugin/weekOfYear";
+
+dayjs.extend(weekOfYear);
+
 const EventsByCategoorie = () => {
-  const params = useParams();
-  const { key } = params;
+
+  const { key } = useParams();
+
   const [category, setCategory] = useState(null);
   const [posts, setPosts] = useState([]);
+  const [weeks, setWeeks] = useState({});
+  const [currentWeek, setCurrentWeek] = useState(1);
+  const [currentMonth, setCurrentMonth] = useState(dayjs());
+
   const [pageData, setPageData] = useState({
-    current_page: 0,
-    last_page: 0,
+    current_page: 1,
+    last_page: 1,
     total: 0,
   });
 
   const handlePageChange = (page) => {
-    if (
-      page !== pageData.current_page &&
-      page > 0 &&
-      page <= pageData.last_page
-    ) {
-      setPageData((prevState) => ({
-        ...prevState,
+    if (page !== pageData.current_page && page > 0 && page <= pageData.last_page) {
+      setPageData((prev) => ({
+        ...prev,
         current_page: page,
       }));
     }
   };
+
   useEffect(() => {
-    if (!key) return; // wait until key is available
+
+    if (!key) return;
 
     axios
-      .get(
-        `${env.baseUrl}/api/events/${key}?page=${pageData.current_page || 1}`,
-      )
+      .get(`${env.baseUrl}/api/events/${key}?page=${pageData.current_page}`)
       .then((response) => {
-        console.log(response.data);
+
+        const eventPosts = response.data.posts.data;
+
         setCategory(response.data.category);
-        setPosts(response.data.posts.data); // since Laravel paginate wraps data
+        setPosts(eventPosts);
+
         setPageData({
           current_page: response.data.posts.current_page,
           last_page: response.data.posts.last_page,
           total: response.data.posts.total,
         });
+
+        const grouped = {};
+
+        eventPosts.forEach((post) => {
+
+          const date = dayjs(post.post_date);
+          const week = date.week();
+
+          if (!grouped[week]) {
+            grouped[week] = [];
+          }
+
+          grouped[week].push(post);
+
+        });
+
+        setWeeks(grouped);
+
       })
       .catch((error) => console.error("Error fetching posts:", error));
+
   }, [key, pageData.current_page]);
 
+  const weekPosts = weeks[currentWeek] || [];
+
   return (
+
     <div>
+
       <section className="inner-banner">
         <div className="container">
           <div className="text-block">
-            <h3>
-              <em>Category</em>
-            </h3>
+            <h3><em>Category</em></h3>
             <h1>{category}</h1>
           </div>
         </div>
       </section>
+
       <section className="thisweek event-category">
+
         <div className="container">
+
           <div className="lt-panel">
-            {/* <Categories type="posts" direction="vertical" activeItem={key} /> */}
             <Categories type="events" direction="vertical" />
           </div>
+
           <div className="rt-panel">
-            <div className="post-block">
-              <div className="d-none d-lg-block d-md-none">
-                <div className="row">
-                  {posts.map((post) => (
-                    <div className="col-lg-4" key={post.id}>
-                      <div className="post-box">
-                        <div className="post-image position-relative">
-                          {" "}
-                          <div class="img-block">
-                            <figure className="thumbnail zoom-effect">
-                              <a href={`/post/${post.slug}`}>
-                                <img src={post.image} alt={post.title} />
-                              </a>
-                            </figure>
-                            <div class="bordered-effect">
-                              <a
-                                href={`/post/${post.slug}`}
-                                aria-label={post.title}
-                              ></a>
-                            </div>
-                          </div>
-                          <div className="post-content">
-                            <div className="post-title">
-                              <h2>
-                                <a href={`/post/${post.slug}`}>{post.title}</a>
-                              </h2>
-                            </div>
-                            <div className="post-category">
-                              {post.category_id}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="d-none d-md-block d-lg-none">
-                <div className="row">
-                  {posts.map((post) => (
-                    <div className="col-sm-6" key={post.id}>
-                      <div className="post-box">
-                        <div className="post-image position-relative">
-                          {" "}
-                          <div class="img-block">
-                            <figure className="thumbnail zoom-effect">
-                              <a href={`/post/${post.slug}`}>
-                                <img src={post.image} alt={post.title} />
-                              </a>
-                            </figure>
-                            <div class="bordered-effect">
-                              <a
-                                href={`/post/${post.slug}`}
-                                aria-label={post.title}
-                              ></a>
-                            </div>
-                          </div>
-                          <div className="post-content">
-                            <div className="post-title">
-                              <h2>
-                                <a href={`/post/${post.slug}`}>{post.title}</a>
-                              </h2>
-                            </div>
-                            <div className="post-category">
-                              {post.category_id}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="d-block d-xs-none d-md-none">
-                <div className="row">
-                  {posts.map((post) => (
-                    <div className="col-xs-12" key={post.id}>
-                      <div className="post-box">
-                        <div className="post-image position-relative">
-                          {" "}
-                          <div class="img-block">
-                            <figure className="thumbnail zoom-effect">
-                              <a href={`/post/${post.slug}`}>
-                                <img src={post.image} alt={post.title} />
-                              </a>
-                            </figure>
-                            <div class="bordered-effect">
-                              <a
-                                href={`/post/${post.slug}`}
-                                aria-label={post.title}
-                              ></a>
-                            </div>
-                          </div>
-                          <div className="post-content">
-                            <div className="post-title">
-                              <h2>
-                                <a href={`/post/${post.slug}`}>{post.title}</a>
-                              </h2>
-                            </div>
-                            <div className="post-category">
-                              {post.category_id}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <nav className="post-pagination" aria-label="post navigation">
-                <ul className="pagination">
-                  {/* Previous Button */}
-                  <li
-                    className={`page-item ${
-                      pageData.current_page === 1 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      className="page-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(pageData.current_page - 1);
-                      }}
-                    >
-                      &laquo; Previous
-                    </button>
-                  </li>
 
-                  {/* Page Number Buttons */}
-                  {[...Array(pageData.last_page)].map((_, index) => {
-                    const pageNumber = index + 1;
-                    return (
-                      <li
-                        key={pageNumber}
-                        className={`page-item ${
-                          pageNumber === pageData.current_page ? "active" : ""
-                        }`}
-                      >
-                        <button
-                          type="button"
-                          className="page-link"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            handlePageChange(pageNumber);
-                          }}
-                        >
-                          {pageNumber}
-                        </button>
-                      </li>
-                    );
-                  })}
+            <div className="calendar-box">
 
-                  {/* Next Button */}
-                  <li
-                    className={`page-item ${
-                      pageData.current_page === pageData.last_page
-                        ? "disabled"
-                        : ""
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      className="page-link"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handlePageChange(pageData.current_page + 1);
-                      }}
-                    >
-                      Next &raquo;
-                    </button>
-                  </li>
-                </ul>
-              </nav>
+              {/* MONTH NAV */}
+              <div className="calendar-header">
+
+                <button
+                  className="nav-arrow"
+                  onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}
+                >
+                  ‹
+                </button>
+
+                <div className="calendar-month">
+                  {currentMonth.format("YYYY MMMM")}
+                </div>
+
+                <button
+                  className="nav-arrow"
+                  onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}
+                >
+                  ›
+                </button>
+
+              </div>
+
+              {/* WEEK NAV */}
+              <div className="week-navigation">
+
+                <button
+                  className="nav-arrow"
+                  onClick={() => setCurrentWeek(currentWeek - 1)}
+                >
+                  ‹
+                </button>
+
+                <span className="week-label">
+                  WEEK {currentWeek}
+                </span>
+
+                <button
+                  className="nav-arrow"
+                  onClick={() => setCurrentWeek(currentWeek + 1)}
+                >
+                  ›
+                </button>
+
+              </div>
+
+              {/* DAYS HEADER */}
+              <div className="week-days">
+                <div>MON</div>
+                <div>TUE</div>
+                <div>WED</div>
+                <div>THU</div>
+                <div>FRI</div>
+                <div>SAT</div>
+                <div>SUN</div>
+              </div>
+
+              {/* EVENTS */}
+              <div className="events-list">
+
+                {weekPosts.length === 0 && (
+                  <div className="no-events">
+                    No events this week
+                  </div>
+                )}
+
+                {weekPosts.map((post) => {
+
+                  const date = dayjs(post.post_date);
+
+                  return (
+
+                    <div className="event-row" key={post.id}>
+
+                      <div className="event-date">
+                        <span className="day">{date.format("DD")}</span>
+                        <span className="month">{date.format("MMMM")}</span>
+                      </div>
+
+                      <div className="event-card">
+
+                        <img src={post.image} alt={post.title} />
+
+                        <div className="event-content">
+
+                          <div className="event-meta">
+                            <span className="event-time">All Day</span>
+                          </div>
+
+                          <div className="event-title">
+                            <a href={`/post/${post.slug}`}>
+                              {post.title}
+                            </a>
+                          </div>
+
+                          <div className="event-category">
+                            {post.category_id}
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  );
+
+                })}
+
+              </div>
+
             </div>
+
           </div>
+
           <div className="clearfix" />
+
         </div>
+
       </section>
-      {/* <section className="passive-map">
-        <div className="container">
-          <iframe
-            src="https://www.google.com/maps/d/embed?mid=1wQ9-Q_Stox1n6bwyudXNlTfS93J1kpA&ehbc=2E312F&noprof=1"
-            width={640}
-            height={480}
-            title="Lebanon Map"
-          />
-        </div>
-      </section> */}
+
       <section className="passive-map">
         <div className="container">
           <PostsMap posts={posts} />
         </div>
       </section>
+
       <LegacyBlock />
+
     </div>
+
   );
 };
 
