@@ -23,7 +23,10 @@ const SingleEvent = () => {
     // Fetch single post/event
     axios
       .get(`${env.baseUrl}/api/details/${key}`)
-      .then((response) => setPost(response.data))
+      .then((response) => {
+        setPost(response.data);
+        console.log("Fetched post details:", response.data);
+      })
       .catch((error) => console.error("Error fetching post:", error));
 
     // Fetch recent posts
@@ -34,6 +37,7 @@ const SingleEvent = () => {
         setRecentPosts(filtered.slice(0, 5));
       })
       .catch((error) => console.error("Error fetching recent posts:", error));
+        
   }, [key]);
 
   // ✅ Read More logic based on DB fields
@@ -88,6 +92,31 @@ const SingleEvent = () => {
                   </div>
                 )}
 
+                 {/* ✅ Disclaimer */}
+                {readMoreLink && (
+                  <p
+                    className="text-muted mt-3"
+                    style={{
+                      fontSize: "0.9rem",
+                      color: "#6c757d",
+                      lineHeight: "1.6",
+                    }}
+                  >
+                    <strong>Disclaimer:</strong> The content above has been
+                    sourced from external or third-party platforms. All rights
+                    belong to their respective owners. For the original version,
+                    please visit{" "}
+                    <a
+                      href={readMoreLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      this source link
+                    </a>
+                    .
+                  </p>
+                )}
+
                 {/* ✅ Share Section */}
                 <div className="share-section mt-5">
                   <h4>Share this post:</h4>
@@ -130,34 +159,71 @@ const SingleEvent = () => {
             </div>
 
             {/* Sidebar */}
+            {/* Sidebar */}
             <div className="col-lg-4">
               <div className="sidebar">
-                <h4>Recent posts</h4>
-                <ul>
-                  {recentPosts.map((recent) => (
-                    <li key={recent.id} style={{ marginBottom: "15px" }}>
-                      <div className="img-thumblain">
-                        <img
-                          src={recent.image}
-                          alt={recent.title}
-                          style={{
-                            width: "100%",
-                            borderRadius: "6px",
-                            marginBottom: "6px",
-                          }}
-                        />
-                      </div>
-                      <div className="post-content">
-                        <h3 style={{ fontSize: "1rem", margin: "0" }}>
-                          <a href={`/post/${recent.slug}`}>{recent.title}</a>
-                        </h3>
-                        <span className="date text-muted" style={{ fontSize: "0.9rem" }}>
-                          {new Date(recent.post_date).toLocaleDateString("en-GB")}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <div className="box">
+                  <h3>Event Details</h3>
+
+                  <div className="inner-block">
+                    <div className="icon">
+                      <i className="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <div className="text">
+                      Date <br />
+                      {post.post_date &&
+                        new Date(post.post_date).toLocaleDateString("en-GB")}
+                    </div>
+                  </div>
+
+                  {/* <div className="inner-block">
+                    <div className="icon">
+                      <i className="fa-solid fa-clock"></i>
+                    </div>
+                    <div className="text">
+                      Time <br />
+                      {post.time || "N/A"}
+                    </div>
+                  </div> */}
+                 
+                  <div className="inner-block">
+                    <div className="icon">
+                      <i className="fa-regular fa-folder"></i>
+                    </div>
+                    <div className="text">
+                      Category <br />
+                      <ul style={{ paddingLeft: "15px", margin: 0 }}>
+                        <li>{post.category_id || "Uncategorized"}</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <h3 style={{ marginTop: "20px" }}>Share this event</h3>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "10px",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <FacebookShareButton url={window.location.href} quote={post.title}>
+                      <FacebookIcon size={30} round />
+                    </FacebookShareButton>
+
+                    <TwitterShareButton url={window.location.href} title={post.title}>
+                      <TwitterIcon size={30} round />
+                    </TwitterShareButton>
+
+                    <LinkedinShareButton url={window.location.href} title={post.title}>
+                      <LinkedinIcon size={30} round />
+                    </LinkedinShareButton>
+
+                    <WhatsappShareButton url={window.location.href} title={post.title}>
+                      <WhatsappIcon size={30} round />
+                    </WhatsappShareButton>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

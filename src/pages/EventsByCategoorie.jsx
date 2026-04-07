@@ -6,9 +6,6 @@ import Categories from "../components/Categories";
 import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
 import dayjs from "dayjs";
-import weekOfYear from "dayjs/plugin/weekOfYear";
-
-dayjs.extend(weekOfYear);
 
 const EventsByCategoorie = () => {
 
@@ -16,7 +13,6 @@ const EventsByCategoorie = () => {
 
   const [category, setCategory] = useState(null);
   const [posts, setPosts] = useState([]);
-  const [weeks, setWeeks] = useState({});
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentMonth, setCurrentMonth] = useState(dayjs());
 
@@ -54,29 +50,41 @@ const EventsByCategoorie = () => {
           total: response.data.posts.total,
         });
 
-        const grouped = {};
-
-        eventPosts.forEach((post) => {
-
-          const date = dayjs(post.post_date);
-          const week = date.week();
-
-          if (!grouped[week]) {
-            grouped[week] = [];
-          }
-
-          grouped[week].push(post);
-
-        });
-
-        setWeeks(grouped);
-
       })
       .catch((error) => console.error("Error fetching posts:", error));
 
   }, [key, pageData.current_page]);
 
-  const weekPosts = weeks[currentWeek] || [];
+
+
+  /* WEEK OF MONTH CALCULATION */
+
+  const getWeekOfMonth = (date) => {
+
+    const start = dayjs(date).startOf("month");
+    const diff = dayjs(date).diff(start, "day");
+
+    return Math.ceil((diff + start.day()) / 7);
+
+  };
+
+
+
+  /* FILTER EVENTS FOR SELECTED MONTH + WEEK */
+
+  const weekPosts = posts.filter((post) => {
+
+    const postDate = dayjs(post.post_date);
+
+    const sameMonth = postDate.isSame(currentMonth, "month");
+
+    const week = getWeekOfMonth(postDate);
+
+    return sameMonth && week === currentWeek;
+
+  });
+
+
 
   return (
 
@@ -91,6 +99,7 @@ const EventsByCategoorie = () => {
         </div>
       </section>
 
+
       <section className="thisweek event-category">
 
         <div className="container">
@@ -99,16 +108,22 @@ const EventsByCategoorie = () => {
             <Categories type="events" direction="vertical" />
           </div>
 
+
           <div className="rt-panel">
 
             <div className="calendar-box">
 
+
               {/* MONTH NAV */}
+
               <div className="calendar-header">
 
                 <button
                   className="nav-arrow"
-                  onClick={() => setCurrentMonth(currentMonth.subtract(1, "month"))}
+                  onClick={() => {
+                    setCurrentMonth(currentMonth.subtract(1, "month"));
+                    setCurrentWeek(1);
+                  }}
                 >
                   ‹
                 </button>
@@ -119,19 +134,26 @@ const EventsByCategoorie = () => {
 
                 <button
                   className="nav-arrow"
-                  onClick={() => setCurrentMonth(currentMonth.add(1, "month"))}
+                  onClick={() => {
+                    setCurrentMonth(currentMonth.add(1, "month"));
+                    setCurrentWeek(1);
+                  }}
                 >
                   ›
                 </button>
 
               </div>
 
+
               {/* WEEK NAV */}
+
               <div className="week-navigation">
 
                 <button
                   className="nav-arrow"
-                  onClick={() => setCurrentWeek(currentWeek - 1)}
+                  onClick={() => {
+                    if (currentWeek > 1) setCurrentWeek(currentWeek - 1);
+                  }}
                 >
                   ‹
                 </button>
@@ -142,14 +164,18 @@ const EventsByCategoorie = () => {
 
                 <button
                   className="nav-arrow"
-                  onClick={() => setCurrentWeek(currentWeek + 1)}
+                  onClick={() => {
+                    if (currentWeek < 5) setCurrentWeek(currentWeek + 1);
+                  }}
                 >
                   ›
                 </button>
 
               </div>
 
+
               {/* DAYS HEADER */}
+
               <div className="week-days">
                 <div>MON</div>
                 <div>TUE</div>
@@ -160,7 +186,9 @@ const EventsByCategoorie = () => {
                 <div>SUN</div>
               </div>
 
+
               {/* EVENTS */}
+
               <div className="events-list">
 
                 {weekPosts.length === 0 && (
@@ -168,6 +196,7 @@ const EventsByCategoorie = () => {
                     No events this week
                   </div>
                 )}
+
 
                 {weekPosts.map((post) => {
 
@@ -179,7 +208,7 @@ const EventsByCategoorie = () => {
 
                       <div className="event-date">
                         <span className="day">{date.format("DD")}</span>
-                        <span className="month">{date.format("MMMM")}</span>
+                        <span className="month">{date.format("MMM")}</span>
                       </div>
 
                       <div className="event-card">
@@ -193,7 +222,7 @@ const EventsByCategoorie = () => {
                           </div>
 
                           <div className="event-title">
-                            <a href={`/post/${post.slug}`}>
+                            <a href={`/event/${post.slug}`}>
                               {post.title}
                             </a>
                           </div>
@@ -214,9 +243,11 @@ const EventsByCategoorie = () => {
 
               </div>
 
+
             </div>
 
           </div>
+
 
           <div className="clearfix" />
 
@@ -224,17 +255,20 @@ const EventsByCategoorie = () => {
 
       </section>
 
+
       <section className="passive-map">
         <div className="container">
           <PostsMap posts={posts} />
         </div>
       </section>
 
+
       <LegacyBlock />
 
     </div>
 
   );
+
 };
 
 export default EventsByCategoorie;
