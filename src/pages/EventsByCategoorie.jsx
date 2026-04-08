@@ -128,7 +128,7 @@ const EventsByCategoorie = () => {
               {/* MONTH NAV */}
               <div className="calendar-header">
                 <button
-                  className="nav-arrow"
+                  className="nav-arrow prev"
                   onClick={() => {
                     setCurrentMonth(currentMonth.subtract(1, "month"));
                     setCurrentWeek(1);
@@ -142,7 +142,7 @@ const EventsByCategoorie = () => {
                 </div>
 
                 <button
-                  className="nav-arrow"
+                  className="nav-arrow next"
                   onClick={() => {
                     setCurrentMonth(currentMonth.add(1, "month"));
                     setCurrentWeek(1);
