@@ -61,7 +61,7 @@ const SingleEvent = () => {
             {/* Main Content */}
             <div className="col-lg-8">
               <div className="content-block">
-                {post.image && (
+                {/* {post.image && (
                   <div className="feature-image mb-3">
                     <img
                       src={post.image}
@@ -69,7 +69,7 @@ const SingleEvent = () => {
                       style={{ width: "100%", borderRadius: "8px" }}
                     />
                   </div>
-                )}
+                )} */}
 
                 <h1>{post.title}</h1>
                 
