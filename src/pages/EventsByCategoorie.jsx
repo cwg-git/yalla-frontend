@@ -64,6 +64,11 @@ const EventsByCategoorie = () => {
     return Math.ceil(daysInMonth / 7);
   };
 
+  /* CHECK IF EVENT IS EXPIRED */
+  const isEventExpired = (postDate) => {
+    return dayjs(postDate).isBefore(dayjs(), 'day');
+  };
+
   /* VALIDATE CURRENT WEEK ON MONTH CHANGE */
   useEffect(() => {
     const weeksInMonth = getWeeksInMonth(currentMonth);
@@ -193,9 +198,10 @@ const EventsByCategoorie = () => {
 
                 {weekPosts.map((post) => {
                   const date = dayjs(post.post_date);
+                  const expired = isEventExpired(post.post_date);
 
                   return (
-                    <div className="event-row" key={post.id}>
+                    <div className={`event-row ${expired ? 'expired' : ''}`} key={post.id}>
                       <div className="event-date">
                         <span className="day">{date.format("DD")}</span>
                         <span className="month">{date.format("MMM")}</span>
@@ -206,17 +212,20 @@ const EventsByCategoorie = () => {
 
                         <div className="event-content">
                           <div className="event-meta">
-                            <span className="event-time">All Day</span>
+                            <span className="event-time"><i className="fa-regular fa-clock"></i> All Day</span>
                           </div>
 
                           <div className="event-title">
                             <a href={`/event/${post.slug}`}>
                               {post.title}
+                              {expired && (
+                                <span className="expired-tag">Expired</span>
+                              )}
                             </a>
                           </div>
 
                           <div className="event-category">
-                            {post.category_id}
+                           <i className="fa-regular fa-folder"></i> {post.category_id}
                           </div>
                         </div>
                       </div>
