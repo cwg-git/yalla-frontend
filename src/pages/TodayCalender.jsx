@@ -1,34 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   PiFolderSimple,
+  PiClock,
   PiCaretLeft,
   PiCaretRight,
-  PiClock,
 } from "react-icons/pi";
 import axios from "axios";
 import LegacyBlock from "../components/LegacyBlock";
-import Categories from "../components/Categories";
 import { env } from "../config";
+import Categories from "../components/Categories";
 
-// Helper: get week number in month
-function getWeekNumber(date) {
-  // Get the first day of the month
-  const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
-  // Get the day of week for the first day (0=Sun, 1=Mon, ...)
-  const firstDayOfWeek = firstDay.getDay();
-  // Calculate offset: if week starts on Monday, adjust so Monday=0
-  const offset = (firstDayOfWeek + 6) % 7;
-  // Calculate the week number in the month
-  return Math.ceil((date.getDate() + offset) / 7);
+// Helper: format date as YYYY-MM-DD (local timezone)
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
+
+// Helper: parse YYYY-MM-DD string to local Date object
+function parseDate(dateString) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// Helper: get days in month
+const getDaysInMonth = (date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const days = [];
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  
+  const startDayOfWeek = firstDay.getDay();
+  for (let i = 0; i < startDayOfWeek; i++) {
+    days.push(null);
+  }
+  
+  for (let i = 1; i <= lastDay.getDate(); i++) {
+    // Create date using local time (year, month, day)
+    days.push(new Date(year, month, i));
+  }
+  
+  return days;
+};
 
 const TodayCalender = () => {
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const [currentWeekStart, setCurrentWeekStart] = useState(
-    getStartOfWeek(new Date())
-  );
+  const [currentDate, setCurrentDate] = useState(new Date());
+  // Set initial selected date using local time
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const today = new Date();
+    return formatDate(today);
+  });
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const dateLabelsRef = useRef(null);
+
+  // Calculate days
+  const days = getDaysInMonth(currentDate);
 
   // Fetch categories on mount
   useEffect(() => {
@@ -38,10 +70,12 @@ const TodayCalender = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  // Fetch events for the current week and selected categories
+  // Fetch events for the current month and selected categories
   useEffect(() => {
-    const start = formatDate(currentWeekStart);
-    const end = formatDate(getEndOfWeek(currentWeekStart));
+    const year = currentDate.getFullYear();
+    const month = String(currentDate.getMonth() + 1).padStart(2, "0");
+    const start = `${year}-${month}-01`;
+    const end = `${year}-${month}-31`;
     const catParam =
       selectedCategories.length > 0 ? selectedCategories.join(",") : "";
     const url = `${
@@ -52,40 +86,9 @@ const TodayCalender = () => {
     axios
       .get(url)
       .then((res) => setEvents(res.data.events || res.data.data || []))
-      .catch((err) => setEvents([]));
-  }, [currentWeekStart, selectedCategories]);
+      .catch(() => setEvents([]));
+  }, [currentDate, selectedCategories]);
 
-  // Helper: get start of week (Monday)
-  function getStartOfWeek(date) {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() - day + (day === 0 ? -6 : 1); // adjust when day is Sunday
-    return new Date(d.setDate(diff));
-  }
-
-  // Helper: get array of days for the week
-  function getWeekDays(start) {
-    const days = [];
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(start);
-      day.setDate(start.getDate() + i);
-      days.push(day);
-    }
-    return days;
-  }
-
-  // Helper: get end of week (Sunday)
-  function getEndOfWeek(date) {
-    const d = new Date(date);
-    const day = d.getDay();
-    const diff = d.getDate() + (7 - day);
-    return new Date(d.setDate(diff));
-  }
-
-  // Helper: format date as YYYY-MM-DD
-  function formatDate(date) {
-    return date.toISOString().split("T")[0];
-  }
   // Handle category checkbox change
   const handleCategoryChange = (cat) => {
     setSelectedCategories((prev) =>
@@ -93,311 +96,365 @@ const TodayCalender = () => {
     );
   };
 
-  // Navigation handlers
-  const handlePrevWeek = () => {
-    const prev = new Date(currentWeekStart);
-    prev.setDate(prev.getDate() - 7);
-    setCurrentWeekStart(getStartOfWeek(prev));
-  };
-  const handleNextWeek = () => {
-    const next = new Date(currentWeekStart);
-    next.setDate(next.getDate() + 7);
-    setCurrentWeekStart(getStartOfWeek(next));
-  };
-
   // Month navigation handlers
   const handlePrevMonth = () => {
-    const prevMonth = new Date(currentWeekStart);
+    const prevMonth = new Date(currentDate);
     prevMonth.setMonth(prevMonth.getMonth() - 1);
-    setCurrentWeekStart(getStartOfWeek(prevMonth));
+    setCurrentDate(prevMonth);
+    // Set to first day of month
+    const firstDay = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), 1);
+    setSelectedDate(formatDate(firstDay));
+    setScrollPosition(0);
   };
+
   const handleNextMonth = () => {
-    const nextMonth = new Date(currentWeekStart);
+    const nextMonth = new Date(currentDate);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
-    setCurrentWeekStart(getStartOfWeek(nextMonth));
+    setCurrentDate(nextMonth);
+    // Set to first day of month
+    const firstDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
+    setSelectedDate(formatDate(firstDay));
+    setScrollPosition(0);
   };
+
+  // Carousel scroll handlers
+  const handleScrollLeft = () => {
+    if (dateLabelsRef.current) {
+      const container = dateLabelsRef.current;
+      const itemWidth = container.querySelector('.mec-daily-view-day')?.offsetWidth || 45;
+      const newPosition = Math.max(0, scrollPosition - itemWidth * 3);
+      container.scrollTo({ left: newPosition, behavior: 'smooth' });
+      setScrollPosition(newPosition);
+    }
+  };
+
+  const handleScrollRight = () => {
+    if (dateLabelsRef.current) {
+      const container = dateLabelsRef.current;
+      const itemWidth = container.querySelector('.mec-daily-view-day')?.offsetWidth || 45;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      const newPosition = Math.min(maxScroll, scrollPosition + itemWidth * 3);
+      container.scrollTo({ left: newPosition, behavior: 'smooth' });
+      setScrollPosition(newPosition);
+    }
+  };
+
+  // Update scroll position on scroll
+  const handleScroll = () => {
+    if (dateLabelsRef.current) {
+      setScrollPosition(dateLabelsRef.current.scrollLeft);
+    }
+  };
+
+  // Handle day selection
+  const handleDayClick = (day) => {
+    if (day) {
+      console.log("Clicked day:", day);
+      console.log("Formatted date:", formatDate(day));
+      setSelectedDate(formatDate(day));
+    }
+  };
+
+  // Get events for selected date
+  const selectedDateEvents = events.filter((ev) => {
+    const eventDate = ev.post_date || ev.date || ev.start_date || ev.startDate;
+    // Extract just the date part (YYYY-MM-DD) for comparison
+    const eventDateStr = eventDate?.split("T")[0];
+    return eventDateStr === selectedDate;
+  });
+
+  // Count events for each day
+  const getEventCountForDay = (day) => {
+    if (!day) return 0;
+    const dayStr = formatDate(day);
+    return events.filter((ev) => {
+      const eventDate = ev.post_date || ev.date || ev.start_date || ev.startDate;
+      const eventDateStr = eventDate?.split("T")[0];
+      return eventDateStr === dayStr;
+    }).length;
+  };
+
+  const isSelected = (day) => {
+    if (!day) return false;
+    return formatDate(day) === selectedDate;
+  };
+
+  // Parse selected date for display - use parseDate to avoid timezone issues
+  const selectedDateObj = parseDate(selectedDate);
+  const selectedDayOfWeek = selectedDateObj.toLocaleDateString(undefined, { weekday: "long" });
+  const selectedDayOfMonth = selectedDateObj.getDate();
 
   return (
     <div>
-      {/* Banner */}
-       
+      <div className="post-categories">
+        <div className="container">
+          <div className="title-block">
+            <h4 className="border-top">Daily Events by Category</h4>
+          </div>
 
-      <div>
-        <section className="thisweek">
-          <div className="container">
-            <h4>Daily Events by Category</h4>
-            <div id="mec_skin_38523" className="mec-wrap colorskin-custom">
-              <form
-                id="mec_search_form_38523"
-                className="mec-search-form mec-totalcal-box mec-dropdown-classic mec-skin-search-init"
-                autoComplete="off"
-              >
-                <div className="mec-dropdown-wrap">
-                  <div className="mec-simple-checkboxes-search">
-                    <PiFolderSimple
-                      size={18}
-                      style={{ verticalAlign: "middle" }}
-                    />
-                    <label htmlFor="mec_sf_category_38523">Category: </label>
-                    <div className="mec-searchbar-category-wrap">
-                      <ul id="mec_sf_category_38523">
-                        {categories.map((cat) => (
-                          <li key={cat.id} id={`mec_category-${cat.id}`}>
-                            <label className="selectit">
-                              <input
-                                defaultValue={cat.id}
-                                title={cat.name}
-                                type="checkbox"
-                                name="tax_input[mec_category][]"
-                                id={`in-mec_category-${cat.id}`}
-                                checked={selectedCategories.includes(
-                                  cat.slugurl || cat.name
-                                )}
-                                onChange={() =>
-                                  handleCategoryChange(cat.slugurl || cat.name)
-                                }
-                              />{" "}
-                              {cat.name}
-                            </label>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+          <div id="mec_skin_38529" className="mec-wrap colorskin-custom">
+            {/* Category Filter */}
+            <form
+              id="mec_search_form_38529"
+              className="mec-search-form mec-totalcal-box mec-dropdown-classic mec-skin-search-init"
+              autoComplete="off"
+            >
+              <div className="mec-dropdown-wrap">
+                <div className="mec-simple-checkboxes-search">
+                  <i className="mec-sl-folder"></i>
+                  <label htmlFor="mec_sf_category_38529">Category: </label>
+                  <div className="mec-searchbar-category-wrap">
+                    <ul id="mec_sf_category_38529">
+                      {categories.map((cat) => (
+                        <li key={cat.id} id={`mec_category-${cat.id}`}>
+                          <label className="selectit">
+                            <input
+                              value={cat.slugurl || cat.name}
+                              title={cat.name}
+                              type="checkbox"
+                              name="tax_input[mec_category][]"
+                              id={`in-mec_category-${cat.id}`}
+                              checked={selectedCategories.includes(cat.slugurl || cat.name)}
+                              onChange={() => handleCategoryChange(cat.slugurl || cat.name)}
+                            />{" "}
+                            {cat.name}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              </form>
-              <div className="mec-calendar mec-calendar-daily mec-calendar-weekly">
-                <div className="mec-skin-weekly-view-month-navigator-container mec-calendar-a-month mec-clear">
-                  <div className="mec-month-navigator" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 16 }}>
-                    <div
-                      className="mec-previous-month mec-load-month mec-color"
-                      style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                      <button
-                        type="button"
-                        className="mec-load-month-link"
-                        onClick={handlePrevMonth}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          padding: 0,
-                          margin: 0,
-                          cursor: "pointer",
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        aria-label="Previous month"
-                      >
-                        <PiCaretLeft size={18} />
-                      </button>
+              </div>
+            </form>
+
+            <div className="mec-calendar mec-calendar-daily">
+              {/* Month Navigator */}
+              <div className="cla-nav">
+                <div className="mec-skin-daily-view-month-navigator-container mec-calendar-a-month mec-clear">
+                  <div className="mec-month-navigator">
+                    <div className="mec-previous-month mec-color mec-load-month" onClick={handlePrevMonth}>
+                      <i className="mec-sl-angle-left"></i>
                     </div>
-                    <h4 className="mec-month-label">
-                      {currentWeekStart.toLocaleDateString(undefined, {
+                    <h4>
+                      {currentDate.toLocaleDateString(undefined, {
                         year: "numeric",
                         month: "long",
                       })}
                     </h4>
-                    <div
-                      className="mec-next-month mec-load-month mec-color"
-                      style={{ cursor: "pointer", display: 'flex', alignItems: 'center', justifyContent: 'center'}}
-                    >
-                      <button
-                        type="button"
-                        className="mec-load-month-link"
-                        onClick={handleNextMonth}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          padding: 0,
-                          margin: 0,
-                          cursor: "pointer",
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        aria-label="Next month"
-                      >
-                        <PiCaretRight size={18} />
-                      </button>
+                    <div className="mec-color mec-next-month mec-load-month" onClick={handleNextMonth}>
+                      <i className="mec-sl-angle-right"></i>
                     </div>
                   </div>
                 </div>
-                <div className="mec-skin-weekly-view-events-container">
-                  <div className="mec-month-container">
-                    <div className="mec-calendar-d-top">
-                      <div
-                        className="mec-previous-month mec-load-week mec-color"
-                        onClick={handlePrevWeek}>
-                        <PiCaretLeft size={18} />
-                      </div>
-                      <h3 className="mec-current-week">
-                        Week <span>{getWeekNumber(currentWeekStart)}</span>
-                      </h3>
-                      <div
-                        className="mec-next-month mec-load-week mec-color"
-                        onClick={handleNextWeek}>
-                        <PiCaretRight size={18} />
-                      </div>
+              </div>
+
+              <div className="mec-skin-daily-view-events-container" id="mec_skin_events_38529">
+                <div className="mec-month-container mec-calendar-a-day mec-clear">
+                  {/* Today Container */}
+                  <div className="mec-today-container mec-calendar-d-top">
+                    <h2>{selectedDayOfMonth}</h2>
+                    <h3>{selectedDayOfWeek}</h3>
+                    <div className="mec-today-count">
+                      {selectedDateEvents.length} Event{selectedDateEvents.length !== 1 ? 's' : ''}
                     </div>
-                    <div className="mec-weeks-container mec-calendar-d-table">
-                      <dl className="mec-weekly-view-week mec-weekly-view-week-active">
-                        {getWeekDays(currentWeekStart).map((day, idx) => (
-                          <dt
+                  </div>
+
+                  {/* Date Labels - Custom Scrollable */}
+                  <div className="mec-date-labels-container mec-calendar-d-table">
+                    <button 
+                      className="mec-table-d-prev mec-color" 
+                      onClick={handleScrollLeft}
+                      style={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10,
+                        background: 'white',
+                        border: 'none',
+                        padding: '5px',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                        borderRadius: '50%',
+                        width: '30px',
+                        height: '30px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <PiCaretLeft size={18} />
+                    </button>
+                    <div 
+                      ref={dateLabelsRef}
+                      className="mec-daily-view-date-labels"
+                      onScroll={handleScroll}
+                      style={{
+                        display: 'flex',
+                        overflowX: 'auto',
+                        scrollBehavior: 'smooth',
+                        gap: '2px',
+                        padding: '0 35px',
+                        scrollbarWidth: 'none',
+                        msOverflowStyle: 'none'
+                      }}
+                    >
+                      {days.map((day, idx) => {
+                        if (!day) {
+                          return (
+                            <div key={`empty-${idx}`} className="mec-daily-view-day mec-empty"></div>
+                          );
+                        }
+                        const eventCount = getEventCountForDay(day);
+                        const dayClasses = [
+                          "mec-daily-view-day",
+                          eventCount > 0 ? "mec-has-event" : "",
+                          isSelected(day) ? "mec-daily-view-day-active mec-color" : "",
+                        ].filter(Boolean).join(" ");
+                        
+                        return (
+                          <div
                             key={formatDate(day)}
-                            className="mec-weekly-view-weekday-cell"
-                          >
-                            <span className="mec-weekly-view-weekday">
-                              {day.toLocaleDateString(undefined, {
-                                weekday: "short",
-                              })}
-                            </span>{" "}
-                            <span className="mec-weekly-view-monthday">
-                              {day.getDate()}
-                            </span>
-                          </dt>
-                        ))}
-                      </dl>
-                    </div>
-                    <div className="mec-week-events-container">
-                      <ul className="mec-weekly-view-dates-events">
-                        {events.length === 0 ? (
-                          <li
+                            className={dayClasses}
+                            data-events-count={eventCount}
+                            data-month-id={`${currentDate.getFullYear()}${String(currentDate.getMonth() + 1).padStart(2, "0")}`}
+                            data-day-id={formatDate(day).replace(/-/g, "")}
+                            data-day-weekday={day.toLocaleDateString(undefined, { weekday: "long" })}
+                            data-day-monthday={day.getDate()}
+                            onClick={() => handleDayClick(day)}
                             style={{
-                              width: "100%",
-                              textAlign: "center",
-                              padding: "60px 0",
+                              minWidth: '45px',
+                              height: '45px',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              cursor: 'pointer',
+                              borderRadius: '4px',
+                              flexShrink: 0
                             }}
                           >
-                            <div
-                              style={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: "100%",
-                              }}
-                            >
-                              <span style={{ fontSize: 24, color: "#888" }}>
-                                No Events
-                              </span>
-                            </div>
-                          </li>
-                        ) : (
-                          getWeekDays(currentWeekStart).map((day, idx) => {
-                            const dayEvents = events.filter((ev) => {
-                              const eventDate =
-                                ev.post_date ||
-                                ev.date ||
-                                ev.start_date ||
-                                ev.startDate;
-                              return eventDate === formatDate(day);
-                            });
-                            if (dayEvents.length === 0) return null;
-                            return dayEvents.map((ev) => (
-                              <li
-                                key={ev.id + "-" + formatDate(day)}
-                                className="mec-weekly-view-date-events mec-calendar-day-events mec-clear"
-                              >
-                                <a
-                                  href={ev.link || `/post/${ev.slug}` }
-                                  rel="noopener noreferrer"
-                                  className="block hover:no-underline"
-                                >
-                                  <article className="mec-event-article">
-                                    <div className="mec-event-list-weekly-date mec-color">
-                                      <span className="mec-date-day">
-                                        {day.getDate()}
-                                      </span>
-                                      {day.toLocaleDateString(undefined, {
-                                        month: "long",
-                                      })}
-                                    </div>
-                                    <div className="mec-weekly-contents-wrapper">
-                                      {ev.image && (
-                                        <div className="mec-event-image">
-                                          <img
-                                            loading="lazy"
-                                            decoding="async"
-                                            width={150}
-                                            height={150}
-                                            src={ev.image}
-                                            className="attachment-thumbnail size-thumbnail 
-                                        wp-post-image"
-                                            alt={ev.title}
-                                          />
-                                        </div>
-                                      )}
-                                      <div className="mec-weekly-contents">
-                                        <div className="mec-event-time mec-color">
-                                          <PiClock
-                                            size={16}
-                                            style={{
-                                              marginRight: 4,
-                                              verticalAlign: "middle",
-                                            }}
-                                          />{" "}
-                                          {ev.time ||
-                                            ev.start_time ||
-                                            "All Day"}
-                                        </div>
-                                        <h4 className="mec-event-title">
-                                          {ev.link ? (
-                                            <a
-                                              className="mec-color-hover"
-                                              href={ev.link || `/post/${ev.slug}` }
-                                              target="_blank"
-                                              rel="noopener noreferrer"
-                                            >
-                                              {ev.title}
-                                            </a>
-                                          ) : (
-                                            ev.title
-                                          )}
-                                        </h4>
-                                        <div className="mec-event-detail">
-                                          {ev.location && (
-                                            <div className="mec-event-loc-place">
-                                              {ev.location}
-                                            </div>
-                                          )}
-                                        </div>
-                                        {ev.category_id && (
-                                          <div className="mec-categories-wrapper">
-                                            <PiFolderSimple
-                                              size={16}
-                                              style={{
-                                                marginRight: 2,
-                                                verticalAlign: "middle",
-                                              }}
-                                            />
-                                            <ul className="mec-categories">
-                                              <li className="mec-category">
-                                                {ev.category_id}
-                                              </li>
-                                            </ul>
-                                          </div>
-                                        )}
-                                      </div>
-                                    </div>
-                                  </article>
-                                </a>
-                              </li>
-                            ));
-                          })
-                        )}
-                      </ul>
-                      <div className="mec-event-footer" />
+                            {day.getDate()}
+                          </div>
+                        );
+                      })}
                     </div>
+                    <button 
+                      className="mec-table-d-next mec-color" 
+                      onClick={handleScrollRight}
+                      style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        zIndex: 10,
+                        background: 'white',
+                        border: 'none',
+                        padding: '5px',
+                        cursor: 'pointer',
+                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                        borderRadius: '50%',
+                        width: '30px',
+                        height: '30px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                    >
+                      <PiCaretRight size={18} />
+                    </button>
+                  </div>
+
+                  {/* Events List */}
+                  <div className="mec-date-labels-container mec-calendar-day-events mec-clear">
+                    <ul className="mec-daily-view-dates-events">
+                      <li className="mec-daily-view-date-events" id={`mec_daily_view_date_events38529_${selectedDate.replace(/-/g, "")}`}>
+                        {selectedDateEvents.length === 0 ? (
+                          <article className="mec-event-article">
+                            <div className="mec-daily-view-no-event mec-no-event">No event</div>
+                          </article>
+                        ) : (
+                          selectedDateEvents.map((ev) => (
+                            <article key={ev.id} className="mec-event-article">
+                              <div className="mec-weekly-contents-wrapper">
+                                {ev.image && (
+                                  <div className="mec-event-image">
+                                    <img
+                                      loading="lazy"
+                                      decoding="async"
+                                      width="150"
+                                      height="150"
+                                      src={ev.image}
+                                      className="attachment-thumbnail size-thumbnail wp-post-image"
+                                      alt={ev.title}
+                                    />
+                                  </div>
+                                )}
+                                <div className="mec-weekly-contents">
+                                  <div className="mec-event-time mec-color">
+                                    <PiClock
+                                                                                size={16}
+                                                                                style={{
+                                                                                  marginRight: 4,
+                                                                                  verticalAlign: "middle",
+                                                                                }}
+                                                                              />{" "}
+                                    {ev.time || ev.start_time || "All Day"}
+                                  </div>
+
+                                  <h4 className="mec-event-title">
+                                    <a
+                                      className="mec-color-hover"
+                                      data-event-id={ev.id}
+                                      href={ev.link || `/event/${ev.slug}`}
+                                      target="_self"
+                                      rel="noopener"
+                                    >
+                                      {ev.title}
+                                    </a>
+                                  </h4>
+
+                                  {ev.location && (
+                                    <div className="mec-event-detail">
+                                      <div className="mec-event-loc-place">{ev.location}</div>
+                                    </div>
+                                  )}
+
+                                  {ev.category_id && (
+                                                                            <div className="mec-categories-wrapper">
+                                                                              <PiFolderSimple
+                                                                                size={16}
+                                                                                style={{
+                                                                                  marginRight: 2,
+                                                                                  verticalAlign: "middle",
+                                                                                }}
+                                                                              />
+                                                                              <ul className="mec-categories">
+                                                                                <li className="mec-category">
+                                                                                  {ev.category_id}
+                                                                                </li>
+                                                                              </ul>
+                                                                            </div>
+                                                                          )}
+                                </div>
+                              </div>
+                            </article>
+                          ))
+                        )}
+                      </li>
+                    </ul>
+                    <div className="mec-event-footer"></div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        </section>
-        <section className="event-categories">
+
+          
+        </div>
+      </div>
+      <section className="event-categories">
           <Categories type="events" />
         </section>
-      </div>
       <section>
         <LegacyBlock />
       </section>
@@ -406,4 +463,3 @@ const TodayCalender = () => {
 };
 
 export default TodayCalender;
-

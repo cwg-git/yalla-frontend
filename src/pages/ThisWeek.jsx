@@ -310,7 +310,7 @@ const ThisWeek = () => {
                                 className="mec-weekly-view-date-events mec-calendar-day-events mec-clear"
                               >
                                 <a
-                                  href={ev.link || `/post/${ev.slug}` }
+                                  href={ev.link || `/event/${ev.slug}` }
                                   rel="noopener noreferrer"
                                   className="block hover:no-underline"
                                 >
@@ -355,7 +355,7 @@ const ThisWeek = () => {
                                           {ev.link ? (
                                             <a
                                               className="mec-color-hover"
-                                              href={ev.link || `/post/${ev.slug}` }
+                                              href={ev.link || `/event/${ev.slug}` }
                                               target="_blank"
                                               rel="noopener noreferrer"
                                             >
