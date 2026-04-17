@@ -9,6 +9,7 @@ import axios from "axios";
 import LegacyBlock from "../components/LegacyBlock";
 import { env } from "../config";
 import Categories from "../components/Categories";
+import dayjs from "dayjs";
 
 // Helper: format date as YYYY-MM-DD (local timezone)
 function formatDate(date) {
@@ -75,7 +76,9 @@ const TodayCalender = () => {
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, "0");
     const start = `${year}-${month}-01`;
-    const end = `${year}-${month}-31`;
+    // const end = `${year}-${month}-31`;
+    const lastDay = new Date(year, currentDate.getMonth() + 1, 0).getDate();
+    const end = `${year}-${month}-${String(lastDay).padStart(2, "0")}`;
     const catParam =
       selectedCategories.length > 0 ? selectedCategories.join(",") : "";
     const url = `${
@@ -157,22 +160,23 @@ const TodayCalender = () => {
 
   // Get events for selected date
   const selectedDateEvents = events.filter((ev) => {
-    const eventDate = ev.post_date || ev.date || ev.start_date || ev.startDate;
-    // Extract just the date part (YYYY-MM-DD) for comparison
-    const eventDateStr = eventDate?.split("T")[0];
-    return eventDateStr === selectedDate;
+    if (!ev.start_date) return false;
+
+    return dayjs(ev.start_date).format("YYYY-MM-DD") === selectedDate;
   });
 
   // Count events for each day
   const getEventCountForDay = (day) => {
-    if (!day) return 0;
-    const dayStr = formatDate(day);
-    return events.filter((ev) => {
-      const eventDate = ev.post_date || ev.date || ev.start_date || ev.startDate;
-      const eventDateStr = eventDate?.split("T")[0];
-      return eventDateStr === dayStr;
-    }).length;
-  };
+  if (!day) return 0;
+
+  const dayStr = dayjs(day).format("YYYY-MM-DD");
+
+  return events.filter((ev) => {
+    if (!ev.start_date) return false;
+
+    return dayjs(ev.start_date).format("YYYY-MM-DD") === dayStr;
+  }).length;
+};
 
   const isSelected = (day) => {
     if (!day) return false;

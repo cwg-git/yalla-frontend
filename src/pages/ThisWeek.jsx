@@ -9,6 +9,7 @@ import axios from "axios";
 import LegacyBlock from "../components/LegacyBlock";
 import Categories from "../components/Categories";
 import { env } from "../config";
+import dayjs from "dayjs";
 
 // Helper: get week number in month
 function getWeekNumber(date) {
@@ -296,12 +297,12 @@ const ThisWeek = () => {
                         ) : (
                           getWeekDays(currentWeekStart).map((day, idx) => {
                             const dayEvents = events.filter((ev) => {
-                              const eventDate =
-                                ev.post_date ||
-                                ev.date ||
-                                ev.start_date ||
-                                ev.startDate;
-                              return eventDate === formatDate(day);
+                              if (!ev.start_date) return false;
+
+                              const eventDate = dayjs(ev.start_date).format("YYYY-MM-DD");
+                              const currentDay = dayjs(day).format("YYYY-MM-DD");
+
+                              return eventDate === currentDay;
                             });
                             if (dayEvents.length === 0) return null;
                             return dayEvents.map((ev) => (

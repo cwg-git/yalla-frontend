@@ -99,12 +99,14 @@ const EventsByCategoorie = () => {
 
   /* FILTER EVENTS FOR SELECTED MONTH + WEEK */
   const weekPosts = posts.filter((post) => {
-    const postDate = dayjs(post.post_date);
+    if (!post.start_date) return false; // 🚫 skip invalid events
+    const postDate = dayjs(post.start_date);
     const sameMonth = postDate.isSame(currentMonth, "month");
     const week = getWeekOfMonth(postDate);
     
     return sameMonth && week === currentWeek;
   });
+  console.log("Week Posts:", weekPosts);
 
   return (
     <div>
@@ -197,8 +199,8 @@ const EventsByCategoorie = () => {
                 )}
 
                 {weekPosts.map((post) => {
-                  const date = dayjs(post.post_date);
-                  const expired = isEventExpired(post.post_date);
+                  const date = dayjs(post.start_date);
+                  const expired = isEventExpired(post.start_date);
 
                   return (
                     <div className={`event-row ${expired ? 'expired' : ''}`} key={post.id}>
@@ -242,7 +244,7 @@ const EventsByCategoorie = () => {
 
       <section className="passive-map">
         <div className="container">
-          <PostsMap posts={posts} />
+          <PostsMap posts={weekPosts} />
         </div>
       </section>
 

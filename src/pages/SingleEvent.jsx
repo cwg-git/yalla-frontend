@@ -194,8 +194,8 @@ const SingleEvent = () => {
                     </div>
                     <div className="text">
                       Date <br />
-                      {post.post_date &&
-                        new Date(post.post_date).toLocaleDateString("en-GB")}
+                      {post.start_date &&
+                        new Date(post.start_date).toLocaleDateString("en-GB")}
                     </div>
                   </div>
 
