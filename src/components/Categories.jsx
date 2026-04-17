@@ -1,10 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { env } from "../config";
+import { useLocation } from "react-router-dom";
 const Categories = ({ type, direction = "horizontal", activeItem }) => {
+  const location = useLocation();
+
+  const activeSlug = location.pathname.split("/").pop();
+  //console.log(currentactive);
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
+    
     // Fetch Categories
     if (!type) {
       console.error("Type is required to fetch categories");
@@ -143,7 +149,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
           <ul>
             {categories.map((cat) => (
               <li
-                className={activeItem === cat.slugurl ? "active" : ""}
+                className={activeSlug === cat.slugurl ? "active" : ""}
                 key={cat.id}
               >
                 <a href={`/post-category/${cat.slugurl}`}>{cat.name}</a>
@@ -158,8 +164,8 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
           <h4>Events Categories</h4>
           <ul>
             {categories.map((cat) => (
-              <li
-                className={activeItem === cat.slugurl ? "active" : ""}
+              <li 
+                className={activeSlug === cat.slugurl ? "active" : ""}
                 key={cat.id}
               >
                 <a href={`/event-category/${cat.slugurl}`}>{cat.name}</a>

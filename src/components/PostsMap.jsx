@@ -140,13 +140,10 @@ const PostsMap = ({ posts }) => {
 
             {/* ORIGINAL LANGUAGE */}
             <div>
-              <b>Local:</b> {m.location_original}
+              <b>Location:</b> {m.location_original}
             </div>
 
-            {/* ENGLISH / NORMALIZED */}
-            <div>
-              <b>English:</b> {m.location_en}
-            </div>
+           
           </Popup>
         </Marker>
       ))}
