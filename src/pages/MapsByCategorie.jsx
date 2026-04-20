@@ -81,9 +81,8 @@ const MapsByCategorie = () => {
         const selected = {};
         const isSingle = res.data.groups.length === 1;
 
-
         res.data.groups.forEach((_, i) => {
-          open[i] = isSingle ? true : false;   // 👈 auto open if only 1
+          open[i] = isSingle ? true : false;   // auto open if only 1
           selected[i] = true;
         });
 
@@ -93,7 +92,7 @@ const MapsByCategorie = () => {
       .catch(console.error);
   }, [key]);
 
-  /**************** LOAD CMS TIMELINE (UNCHANGED) ****************/
+  /**************** LOAD CMS TIMELINE ****************/
   useEffect(() => {
     if (!category?.id) return;
 
@@ -122,6 +121,7 @@ const MapsByCategorie = () => {
       type: groupName,
       lat: p.lat,
       lng: p.lng,
+      isCluster: false,
     });
   };
 
@@ -148,7 +148,7 @@ const MapsByCategorie = () => {
       {/* ================= MAP SECTION ================= */}
       <section className="about-us">
         <div className="container">
-          {/* ===== TITLE BLOCK (UNCHANGED STRUCTURE) ===== */}
+          {/* ===== TITLE BLOCK ===== */}
           {category && (
             <div className="title-block text-center">
               <h2>{category.cat_healine}</h2>
@@ -221,13 +221,18 @@ const MapsByCategorie = () => {
 
               <div id="details">
                 {!selectedPoint ? (
-                  <p>Click a marker to see details.</p>
+                  <p>Click a marker or cluster to see details.</p>
                 ) : (
                   <>
                     <h3>{selectedPoint.name}</h3>
                     <p>
                       <strong>Type:</strong> {selectedPoint.type}
                     </p>
+                    {selectedPoint.isCluster && selectedPoint.description && (
+                      <p>
+                        <strong>Info:</strong> {selectedPoint.description}
+                      </p>
+                    )}
                     <p>
                       <strong>Coordinates:</strong> {selectedPoint.lat},{" "}
                       {selectedPoint.lng}
@@ -237,7 +242,7 @@ const MapsByCategorie = () => {
                       onClick={() =>
                         window.open(
                           `https://www.google.com/maps/dir/?api=1&destination=${selectedPoint.lat},${selectedPoint.lng}`,
-                          "_blank",
+                          "_blank"
                         )
                       }
                     >
@@ -268,29 +273,71 @@ const MapsByCategorie = () => {
                   (group, gi) =>
                     selectedGroups[gi] && (
                       <MarkerClusterGroup
-                        key={group.id}
-                        chunkedLoading
-                        showCoverageOnHover={false}
-                        iconCreateFunction={() =>
-                          createClusterIcon(`${env.baseUrl}/${group.icon_url}`)
-                        }
-                      >
+  key={group.id}
+  chunkedLoading
+  showCoverageOnHover={false}
+  disableClusteringAtZoom={16}
+  spiderfyOnMaxZoom={true}
+  zoomToBoundsOnClick={true}
+  iconCreateFunction={() =>
+    createClusterIcon(`${env.baseUrl}/${group.icon_url}`)
+  }
+  eventHandlers={{
+    clusterclick: (cluster) => {
+      const childMarkers = cluster.layer.getAllChildMarkers?.() || [];
+      const pointCount = childMarkers.length;
+
+      const groupNames = [
+        ...new Set(childMarkers.map((m) => m.options.groupName)),
+      ];
+
+      const titles = childMarkers
+        .slice(0, 3)
+        .map((m) => m.options.title)
+        .join(", ");
+
+      let summary = `${pointCount} locations`;
+
+      if (groupNames.length === 1) {
+        summary += ` in "${groupNames[0]}"`;
+      }
+
+      if (titles) {
+        summary += ` – includes: ${titles}${pointCount > 3 ? "…" : ""}`;
+      }
+
+      setSelectedPoint({
+        name: `📍 Cluster (${pointCount} locations)`,
+        type: groupNames.join(", ") || group.group_name,
+        lat: cluster.layer.getLatLng().lat,
+        lng: cluster.layer.getLatLng().lng,
+        description: summary,
+        isCluster: true,
+      });
+    },
+  }}
+>
                         {group.points.map((p) => (
                           <Marker
                             key={`${p.id}-${group.id}`}
                             position={[+p.lat, +p.lng]}
-                            icon={createIcon(
-                              `${env.baseUrl}/${group.icon_url}`,
-                            )}
+                            icon={createIcon(`${env.baseUrl}/${group.icon_url}`)}
                             eventHandlers={{
-                              click: () =>
+                              click: (e) => {
+                                 L.DomEvent.stopPropagation(e); // 🔥 CRITICAL
                                 setSelectedPoint({
                                   name: p.title,
                                   type: group.group_name,
                                   lat: p.lat,
                                   lng: p.lng,
-                                }),
+                                  isCluster: false,
+                                });
+                                e.target.openPopup();
+                              },
                             }}
+                            // Attach metadata so cluster handler can read it
+                            title={p.title}
+                            options={{ title: p.title, groupName: group.group_name }}
                           >
                             <Popup>{p.title}</Popup>
                           </Marker>
@@ -304,7 +351,7 @@ const MapsByCategorie = () => {
         </div>
       </section>
 
-      {/* ================= CMS TIMELINE (UNCHANGED & KEPT) ================= */}
+      {/* ================= CMS TIMELINE ================= */}
       <section className="timeline">
         <div className="container">
           {cmsTimeline.map((item) => (
