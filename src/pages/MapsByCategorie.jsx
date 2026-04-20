@@ -79,9 +79,11 @@ const MapsByCategorie = () => {
 
         const open = {};
         const selected = {};
+        const isSingle = res.data.groups.length === 1;
+
 
         res.data.groups.forEach((_, i) => {
-          open[i] = false;
+          open[i] = isSingle ? true : false;   // 👈 auto open if only 1
           selected[i] = true;
         });
 
