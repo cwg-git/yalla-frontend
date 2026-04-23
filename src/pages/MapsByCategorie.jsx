@@ -87,6 +87,7 @@ const MapsByCategorie = () => {
   const onMarkerClick = (p, group) => {
     setSelectedPoint({
       name: p.title,
+      description: p.description, // 👈 ADD THIS
       type: group.group_name,
       lat: p.lat,
       lng: p.lng,
@@ -111,7 +112,7 @@ const markerNodes = React.useMemo(() => {
               },
             }}
           >
-            <Popup>{p.title}</Popup>
+            <Popup>{p.title}<br/>{p.description}</Popup>
           </Marker>
         ))
       : null
