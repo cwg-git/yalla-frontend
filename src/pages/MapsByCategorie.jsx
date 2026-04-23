@@ -54,7 +54,16 @@ const MapsByCategorie = () => {
   
   const selectedPointRef = useRef(null);
   const markerRegistry = useRef({});
+  const [activePointId, setActivePointId] = useState(null);
 
+  useEffect(() => {
+    if (!activePointId) return;
+
+    const el = document.querySelector(`[data-point-id="${activePointId}"]`);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [activePointId]);
 
   const getGroupIcon = (groups, groupName) => {
     const group = groups.find(g => g.group_name === groupName);
@@ -86,7 +95,10 @@ const markerNodes = React.useMemo(() => {
               if (ref) markerRegistry.current[p.id] = ref;
             }}
             eventHandlers={{
-              click: () => onMarkerClick(p, group),
+              click: () => {
+                setActivePointId(p.id);
+                onMarkerClick(p, group);
+              },
             }}
           >
             <Popup>{p.title}</Popup>
@@ -257,12 +269,17 @@ const MapBinder = ({ setMap }) => {
                         <ul>
                           {group.points.map((p) => (
                             <li
-                              key={`${p.id}-${p.group_id}`}
+                              ref={(el) => {
+                                if (activePointId === p.id && el) {
+                                  el.scrollIntoView({ behavior: "smooth", block: "center" });
+                                }
+                              }}
+                              data-point-id={p.id}
+                              className={activePointId === p.id ? "active-item" : ""}
                               onClick={() => {
-                                //  alert("SIDEBAR CLICK WORKS");
-                                 zoomToMarker(p, group.group_name)
-                                }}
-                              style={{ cursor: "pointer" }}
+                                setActivePointId(p.id);
+                                zoomToMarker(p, group.group_name);
+                              }}
                             >
                               {p.title}
                             </li>
