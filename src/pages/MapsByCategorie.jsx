@@ -59,10 +59,20 @@ const MapsByCategorie = () => {
   useEffect(() => {
     if (!activePointId) return;
 
+    const sidebar = document.getElementById("sidebar");
     const el = document.querySelector(`[data-point-id="${activePointId}"]`);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
+
+    if (!sidebar || !el) return;
+
+    requestAnimationFrame(() => {
+      const top =
+        el.offsetTop - sidebar.offsetTop - sidebar.clientHeight / 2;
+
+      sidebar.scrollTo({
+        top,
+        behavior: "smooth",
+      });
+    });
   }, [activePointId]);
 
   const getGroupIcon = (groups, groupName) => {
@@ -269,11 +279,6 @@ const MapBinder = ({ setMap }) => {
                         <ul>
                           {group.points.map((p) => (
                             <li
-                              ref={(el) => {
-                                if (activePointId === p.id && el) {
-                                  el.scrollIntoView({ behavior: "smooth", block: "center" });
-                                }
-                              }}
                               data-point-id={p.id}
                               className={activePointId === p.id ? "active-item" : ""}
                               onClick={() => {
