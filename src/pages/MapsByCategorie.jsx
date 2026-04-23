@@ -33,12 +33,7 @@ const FitBounds = ({ groups, selectedGroups }) => {
   return null;
 };
 
-const createClusterIcon = (iconUrl) =>
-  L.divIcon({
-    html: `<div class="cluster-icon"><img src="${iconUrl}" /></div>`,
-    className: "custom-cluster",
-    iconSize: L.point(46, 46),
-  });
+
 
 const MapsByCategorie = () => {
   const { key } = useParams();
@@ -49,10 +44,61 @@ const MapsByCategorie = () => {
   const [openGroups, setOpenGroups] = useState({});
   const [selectedGroups, setSelectedGroups] = useState({});
   const [selectedPoint, setSelectedPoint] = useState(null);
-  const [clusteringEnabled, setClusteringEnabled] = useState(true);
-  const hasClusterBeenClicked = useRef(false);
-  const mapRef = useRef(null);
-  let currentHighlightTimeout = null;
+ 
+ const mapRef = useRef(null);
+ const [, force] = useState(0);
+ const clusterRef = useRef(null);
+
+  // const markersRef = useRef({});
+
+  
+  const selectedPointRef = useRef(null);
+  const markerRegistry = useRef({});
+
+
+  const getGroupIcon = (groups, groupName) => {
+    const group = groups.find(g => g.group_name === groupName);
+    return group?.icon_url ? `${env.baseUrl}/${group.icon_url}` : "";
+  };
+  const setMap = (map) => {
+    mapRef.current = map;
+    force((x) => x + 1);
+  };
+
+  const onMarkerClick = (p, group) => {
+    setSelectedPoint({
+      name: p.title,
+      type: group.group_name,
+      lat: p.lat,
+      lng: p.lng,
+    });
+  };
+const markerNodes = React.useMemo(() => {
+  return groups.map((group, gi) =>
+    selectedGroups[gi]
+      ? group.points.map((p) => (
+          <Marker
+            key={`${group.id}-${p.id}`}
+            position={[+p.lat, +p.lng]}
+            icon={createIcon(`${env.baseUrl}/${group.icon_url}`)}
+            groupName={group.group_name}
+            ref={(ref) => {
+              if (ref) markerRegistry.current[p.id] = ref;
+            }}
+            eventHandlers={{
+              click: () => onMarkerClick(p, group),
+            }}
+          >
+            <Popup>{p.title}</Popup>
+          </Marker>
+        ))
+      : null
+  );
+}, [groups, selectedGroups]);
+
+
+
+ 
 
   useEffect(() => {
     axios
@@ -82,92 +128,54 @@ const MapsByCategorie = () => {
       .catch(console.error);
   }, [category]);
 
+  
+
   const toggleGroupVisible = (index) => {
     setSelectedGroups((p) => ({ ...p, [index]: !p[index] }));
     setSelectedPoint(null);
   };
 
-  // Highlight a marker by its Leaflet marker object
-  const highlightMarker = (marker) => {
-    if (!marker || !marker._icon) return;
-    // Clear previous highlight
-    if (currentHighlightTimeout) clearTimeout(currentHighlightTimeout);
-    // Remove existing pulse class from any marker
-    document.querySelectorAll('.marker-pulse').forEach(el => el.classList.remove('marker-pulse'));
-    // Add pulse class
-    marker._icon.classList.add('marker-pulse');
-    currentHighlightTimeout = setTimeout(() => {
-      if (marker._icon) marker._icon.classList.remove('marker-pulse');
-    }, 1500);
-  };
+const zoomToMarker = (p, groupName) => {
+  const map = mapRef.current;
+  const marker = markerRegistry.current[p.id];
+  console.log("MAP CALLED", map);
 
-  const zoomToMarker = (p, groupName) => {
-    if (!mapRef.current) return;
-    const lat = +p.lat;
-    const lng = +p.lng;
-    
-    mapRef.current.flyTo([lat, lng], 15, { duration: 0.8 });
-    setSelectedPoint({
-      name: p.title,
-      type: groupName,
-      lat: p.lat,
-      lng: p.lng,
-    });
-    
-    // After fly, find the marker by coordinates and open popup + highlight
-    setTimeout(() => {
-      let foundMarker = null;
-      mapRef.current.eachLayer((layer) => {
-        if (layer instanceof L.Marker && layer.getLatLng().lat === lat && layer.getLatLng().lng === lng) {
-          foundMarker = layer;
-        }
-      });
-      if (foundMarker) {
-        foundMarker.openPopup();
-        highlightMarker(foundMarker);
-      } else {
-        console.warn("Marker not found for coordinates", lat, lng);
-      }
-    }, 900);
-  };
+  if (!map) {
+    console.warn("Map not ready yet");
+    return;
+  }
 
-  const handleClusterClick = (e) => {
-    L.DomEvent.stopPropagation(e);
-    if (e.originalEvent) e.originalEvent.preventDefault();
-    e.preventDefault?.();
+  const lat = +p.lat;
+  const lng = +p.lng;
 
-    if (clusteringEnabled && !hasClusterBeenClicked.current) {
-      hasClusterBeenClicked.current = true;
-      setClusteringEnabled(false);
-      const center = e.layer.getLatLng();
-      if (center && mapRef.current) {
-        mapRef.current.flyTo([center.lat, center.lng], 12, { duration: 0.8 });
-      }
+  map.flyTo([lat, lng], 17, {
+    animate: true,
+    duration: 0.8,
+  });
+
+  setSelectedPoint({
+    name: p.title,
+    type: groupName,
+    lat,
+    lng,
+  });
+  // 👇 THIS is the missing piece
+  setTimeout(() => {
+    if (marker) {
+      marker.openPopup();
     }
-  };
+  }, 300);
+};
 
-  const backToFirstZone = () => {
-    setClusteringEnabled(true);
-    hasClusterBeenClicked.current = false;
-    setTimeout(() => {
-      if (mapRef.current && groups.length > 0) {
-        const bounds = [];
-        groups.forEach((group, index) => {
-          if (!selectedGroups[index]) return;
-          group.points.forEach((p) => {
-            const lat = Number(p.lat);
-            const lng = Number(p.lng);
-            if (!isNaN(lat) && !isNaN(lng)) bounds.push([lat, lng]);
-          });
-        });
-        if (bounds.length > 0) {
-          mapRef.current.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
-        } else {
-          mapRef.current.setView([33.8547, 35.8623], 7);
-        }
-      }
-    }, 300);
-  };
+const MapBinder = ({ setMap }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    setMap(map);
+  }, [map]);
+
+  return null;
+};
 
   const defaultCenter = [33.8547, 35.8623];
 
@@ -204,49 +212,7 @@ const MapsByCategorie = () => {
             <div id="sidebar">
               <div className="filter-title">{category?.name || "Map Categories"}</div>
 
-               {/* CLUSTERING TOGGLE BUTTON */}
-              {/* <div style={{ padding: "10px", textAlign: "center", borderBottom: "1px solid #ddd", marginBottom: "10px" }}>
-                <button
-                  onClick={() => setClusteringEnabled(!clusteringEnabled)}
-                  style={{
-                    padding: "8px 16px",
-                    backgroundColor: clusteringEnabled ? "#dc3545" : "#28a745",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "4px",
-                    cursor: "pointer",
-                    fontSize: "14px",
-                    fontWeight: "bold"
-                  }}
-                >
-                  {clusteringEnabled ? "🔴 Disable Clustering" : "🟢 Enable Clustering"}
-                </button>
-                <p style={{ fontSize: "12px", marginTop: "8px", color: "#666" }}>
-                  {clusteringEnabled
-                    ? "Markers are grouped – click cluster to zoom"
-                    : "Clustering OFF – click any marker directly for popup"}
-                </p>
-              </div> */}
-              {/* {!clusteringEnabled && (
-                <div style={{ padding: "10px", textAlign: "center" }}>
-                  <button
-                    onClick={backToFirstZone}
-                    style={{
-                      padding: "6px 12px",
-                      backgroundColor: "#007bff",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "4px",
-                      cursor: "pointer",
-                      fontSize: "12px",
-                      fontWeight: "bold"
-                    }}
-                  >
-                    🔄 Back to 1st Zone
-                  </button>
-                </div>
-              )} */}
-
+              
 
               <div id="details">
                 {!selectedPoint ? (
@@ -293,7 +259,11 @@ const MapsByCategorie = () => {
                           {group.points.map((p) => (
                             <li
                               key={`${p.id}-${p.group_id}`}
-                              onClick={() => zoomToMarker(p, group.group_name)}
+                              onClick={() => {
+                                //  alert("SIDEBAR CLICK WORKS");
+                                 zoomToMarker(p, group.group_name)
+                                }}
+                              style={{ cursor: "pointer" }}
                             >
                               {p.title}
                             </li>
@@ -309,54 +279,65 @@ const MapsByCategorie = () => {
             <div id="map">
               <MapContainer
                 center={defaultCenter}
+                closePopupOnClick={false}
                 zoom={7}
                 style={{ width: "100%", height: "100%" }}
-                whenCreated={(map) => (mapRef.current = map)}
+                // whenCreated={(map) => (mapRef.current = map)}
                 preferCanvas={true}
               >
                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="© OpenStreetMap contributors" />
                 <FitBounds groups={groups} selectedGroups={selectedGroups} />
+                <MapBinder setMap={setMap} />
+                <MarkerClusterGroup
+                  ref={clusterRef}
+                  chunkedLoading
+                  showCoverageOnHover={false}
+                  maxClusterRadius={60}
+                  spiderfyOnClick={true}
+                  spiderfyOnMaxZoom={true}
+                  spiderfyOnEveryZoom={false}
+                  spiderfyDistanceMultiplier={1.4} 
+                  // zoomToBoundsOnClick={false}
+                  disableClusteringAtZoom={16}
+                  removeOutsideVisibleBounds={true}
+                  animate={true}
+                  animateAddingMarkers={true}
+                  iconCreateFunction={(cluster) => {
+                    const markers = cluster.getAllChildMarkers();
 
-                {groups.map((group, gi) => {
-                  if (!selectedGroups[gi]) return null;
-                  const markerElements = group.points.map((p) => (
-                    <Marker
-                      key={`${group.id}-${p.id}`}
-                      position={[+p.lat, +p.lng]}
-                      icon={createIcon(`${env.baseUrl}/${group.icon_url}`)}
-                      title={p.title}
-                      alt={p.title}
-                      eventHandlers={{
-                        click: () =>
-                          setSelectedPoint({
-                            name: p.title,
-                            type: group.group_name,
-                            lat: p.lat,
-                            lng: p.lng,
-                          }),
-                      }}
-                    >
-                      <Popup>{p.title}</Popup>
-                    </Marker>
-                  ));
+                    const groupCount = {};
 
-                  if (!clusteringEnabled) {
-                    return <React.Fragment key={group.id}>{markerElements}</React.Fragment>;
-                  }
+                    markers.forEach((m) => {
+                      const group = m.options.groupName || "default";
+                      groupCount[group] = (groupCount[group] || 0) + 1;
+                    });
 
-                  return (
-                    <MarkerClusterGroup
-                      key={group.id}
-                      chunkedLoading
-                      showCoverageOnHover={false}
-                      maxClusterRadius={60}
-                      iconCreateFunction={() => createClusterIcon(`${env.baseUrl}/${group.icon_url}`)}
-                      eventHandlers={{ clusterclick: handleClusterClick }}
-                    >
-                      {markerElements}
-                    </MarkerClusterGroup>
-                  );
-                })}
+                    let dominantGroup = null;
+                    let max = 0;
+
+                    Object.keys(groupCount).forEach((g) => {
+                      if (groupCount[g] > max) {
+                        max = groupCount[g];
+                        dominantGroup = g;
+                      }
+                    });
+
+                    const iconUrl = getGroupIcon(groups, dominantGroup);
+
+                    return L.divIcon({
+                      html: `
+                        <div class="cluster-icon">
+                          ${iconUrl ? `<img src="${iconUrl}" />` : ""}
+                          <span>${cluster.getChildCount()}</span>
+                        </div>
+                      `,
+                      className: "custom-cluster",
+                      iconSize: L.point(50, 50),
+                    });
+                  }}
+                >
+                 {markerNodes}
+                </MarkerClusterGroup>
               </MapContainer>
             </div>
           </div>
