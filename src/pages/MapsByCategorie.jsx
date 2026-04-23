@@ -160,11 +160,10 @@ const zoomToMarker = (p, groupName) => {
     lng,
   });
   // 👇 THIS is the missing piece
-  setTimeout(() => {
-    if (marker) {
-      marker.openPopup();
-    }
-  }, 300);
+  map.once("moveend", () => {
+    const marker = markerRegistry.current[p.id];
+    marker?.openPopup();
+  });
 };
 
 const MapBinder = ({ setMap }) => {
