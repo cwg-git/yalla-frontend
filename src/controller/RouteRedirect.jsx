@@ -14,8 +14,10 @@ import SingleEvent from "../pages/SingleEvent";
 
 import EventsByCategoorie from "../pages/EventsByCategoorie";
 import PostsByCategoorie from "../pages/PostsByCategoorie";
+import SearchPage from "../pages/SearchPage";
 
 import MapsByCategorie from "../pages/MapsByCategorie";
+import AllMapsByCategory from "../pages/AllMapsByCategory";
 import SingleMap from "../pages/SingleMap";
 
 const RedirectComponent = () => {
@@ -40,6 +42,8 @@ const RedirectComponent = () => {
     "event-category": <EventsByCategoorie />,
     "post-category": <PostsByCategoorie />,
     "maps-category": <MapsByCategorie />,
+    "all-maps": <AllMapsByCategory />,
+    "search": <SearchPage />,
 
     // Single pages
     post: key ? <SinglePost /> : null,

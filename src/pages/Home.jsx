@@ -129,7 +129,7 @@ const Home = () => {
             <h4>Recent Posts</h4>
           </div>
 
-          <div className="d-none d-lg-block d-md-none">
+          <div className="d-block d-lg-block d-md-none">
             <div className="row">
               {posts.map((post) => (
                 <div className="col-lg-4 col-md-4" key={post.id}>

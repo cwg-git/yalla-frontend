@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { env } from "../config";
 import { useLocation } from "react-router-dom";
-const Categories = ({ type, direction = "horizontal", activeItem }) => {
+const AllCategories = ({ type, direction = "horizontal", activeItem }) => {
   const location = useLocation();
 
   const activeSlug = location.pathname.split("/").pop();
@@ -84,7 +84,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
                 <div className="col-md-4 col-sm-4 col-xs-4" key={category.id}>
                   <a
                     className="btn"
-                    href={`/event-category/${category.slugurl}`}
+                    href={`/all-maps/${category.slugurl}`}
                     style={{ display: "flex", alignItems: "center" }}
                   >
                     <img
@@ -106,12 +106,11 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
         </section>
       );
     } else if (type === "maps") {
-      const isLegacy = location.pathname.includes("/legacy");
       return (
         <section className="post-categories map-categories">
           <div className="container">
             <div className="title-block">
-            <h4>{isLegacy ? "All available Legends maps" : "Map Categories"}</h4>
+            <h4>Map Categories</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -169,7 +168,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
                 className={activeSlug === cat.slugurl ? "active" : ""}
                 key={cat.id}
               >
-                <a href={`/event-category/${cat.slugurl}`}>{cat.name}</a>
+                <a href={`/all-maps/${cat.slugurl}`}>{cat.name}</a>
               </li>
             ))}
           </ul>
@@ -179,4 +178,4 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
   }
 };
 
-export default Categories;
+export default AllCategories;

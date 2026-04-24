@@ -66,7 +66,7 @@ const PostsByCategoorie = () => {
           </div>
           <div className="rt-panel">
             <div className="post-block">
-              <div className="d-none d-lg-block d-md-none">
+              <div className="d-block d-lg-block d-md-none">
                 <div className="row">
                   {posts.map((post) => (
                     <div className="col-lg-4" key={post.id}>
@@ -102,7 +102,7 @@ const PostsByCategoorie = () => {
                   ))}
                 </div>
               </div>
-              <div className="d-none d-md-block d-lg-none">
+              <div className="d-block d-md-block d-lg-none">
                 <div className="row">
                   {posts.map((post) => (
                     <div className="col-sm-6" key={post.id}>

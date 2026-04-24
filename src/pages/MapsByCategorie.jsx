@@ -373,9 +373,9 @@ const MapBinder = ({ setMap }) => {
               <h2>{item.headline}</h2>
               <div className="inner">
                 <ul>
-                  <li><i className="fa-solid fa-flag"></i> {item.firstline}</li>
-                  <li><i className="fa-solid fa-location-dot"></i> {item.location}</li>
-                  <li><i className="fa-solid fa-clipboard"></i> {item.thirdline}</li>
+                  {item.firstline && (<li><i className="fa-solid fa-flag"></i> {item.firstline}</li>)}
+                  {item.location && (<li><i className="fa-solid fa-location-dot"></i> {item.location}</li>)}
+                  {item.thirdline && (<li><i className="fa-solid fa-clipboard"></i> {item.thirdline}</li>)}
                 </ul>
               </div>
             </div>
