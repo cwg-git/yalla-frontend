@@ -6,7 +6,6 @@ import {
   PiCaretRight,
 } from "react-icons/pi";
 import axios from "axios";
-import LegacyBlock from "../components/LegacyBlock";
 import { env } from "../config";
 import Categories from "../components/Categories";
 import dayjs from "dayjs";
@@ -108,6 +107,10 @@ const TodayCalender = () => {
     const firstDay = new Date(prevMonth.getFullYear(), prevMonth.getMonth(), 1);
     setSelectedDate(formatDate(firstDay));
     setScrollPosition(0);
+    // Reset scroll position
+    if (dateLabelsRef.current) {
+      dateLabelsRef.current.scrollLeft = 0;
+    }
   };
 
   const handleNextMonth = () => {
@@ -118,27 +121,26 @@ const TodayCalender = () => {
     const firstDay = new Date(nextMonth.getFullYear(), nextMonth.getMonth(), 1);
     setSelectedDate(formatDate(firstDay));
     setScrollPosition(0);
+    // Reset scroll position
+    if (dateLabelsRef.current) {
+      dateLabelsRef.current.scrollLeft = 0;
+    }
   };
 
   // Carousel scroll handlers
   const handleScrollLeft = () => {
     if (dateLabelsRef.current) {
       const container = dateLabelsRef.current;
-      const itemWidth = container.querySelector('.mec-daily-view-day')?.offsetWidth || 45;
-      const newPosition = Math.max(0, scrollPosition - itemWidth * 3);
-      container.scrollTo({ left: newPosition, behavior: 'smooth' });
-      setScrollPosition(newPosition);
+      const scrollAmount = 150; // Scroll by fixed amount
+      container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     }
   };
 
   const handleScrollRight = () => {
     if (dateLabelsRef.current) {
       const container = dateLabelsRef.current;
-      const itemWidth = container.querySelector('.mec-daily-view-day')?.offsetWidth || 45;
-      const maxScroll = container.scrollWidth - container.clientWidth;
-      const newPosition = Math.min(maxScroll, scrollPosition + itemWidth * 3);
-      container.scrollTo({ left: newPosition, behavior: 'smooth' });
-      setScrollPosition(newPosition);
+      const scrollAmount = 150; // Scroll by fixed amount
+      container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
     }
   };
 
@@ -269,7 +271,7 @@ const TodayCalender = () => {
                       className="mec-table-d-prev mec-color" 
                       onClick={handleScrollLeft}
                       style={{
-                       position: 'absolute',
+                        position: 'absolute',
                         left: 0,
                         width: '55px',
                         margin: 0,
@@ -440,9 +442,6 @@ const TodayCalender = () => {
       <section className="event-categories">
           <Categories type="events" />
         </section>
-      <section>
-        <LegacyBlock />
-      </section>
     </div>
   );
 };
