@@ -121,7 +121,14 @@ const LegacyPage = () => {
   return (
     <div>
       {/* Banner */}
-     
+     <section className="inner-banner">
+                     <div className="container">
+                         <div className="text-block">
+                             <h3><em>Our</em></h3>
+                             <h1><em>Legacy</em></h1>
+                         </div>
+                     </div>
+                 </section>
       <div>
         <section className="testimonial text-center">
           <div className="container">

@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 
 import Home from "../pages/Home";
 import ThisWeek from "../pages/ThisWeek";
+import Today from "../pages/Today";
 import Legacy from "../pages/Legacy";
 import Categories from "../pages/Categories";
 import Agendas from "../pages/Agendas";
@@ -35,7 +36,7 @@ const RedirectComponent = () => {
 
     // Legacy filters
     yesterday: <Legacy type="yesterday" />,
-    today: <Legacy type="today" />,
+    today: <Today />,
     forever: <Legacy type="forever" />,
 
     // Category pages
