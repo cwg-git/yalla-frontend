@@ -358,8 +358,8 @@ footer p, footer a{color:#CECECE;}
 #mec_skin_38529 .mec-search-form{width:20%;}
 #mec_skin_38529 .mec-calendar{width:79%;}
 #mec_skin_38529{margin-bottom:50px;}
-#mec_skin_38529 .mec-calendar.mec-calendar-daily .mec-calendar-a-month{width:300px !important; display:block !important; margin:0 auto !important;}
-
+#mec_skin_38529 .mec-calendar.mec-calendar-daily .mec-calendar-a-month{border:none; display:block !important; margin:0 auto !important;}
+#mec_skin_events_38529 svg{margin:0 auto;}
 .testimonial-block{padding-bottom:30px;}
 .testimonial-block h4{font-size:16px; font-weight:600; margin:0; padding:0 0 10px;}
 .testimonial-block img{width:80px; height:auto;}

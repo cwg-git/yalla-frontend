@@ -269,22 +269,13 @@ const TodayCalender = () => {
                       className="mec-table-d-prev mec-color" 
                       onClick={handleScrollLeft}
                       style={{
-                        position: 'absolute',
+                       position: 'absolute',
                         left: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        zIndex: 10,
-                        background: 'white',
-                        border: 'none',
-                        padding: '5px',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                        borderRadius: '50%',
-                        width: '30px',
-                        height: '30px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        width: '55px',
+                        margin: 0,
+                        top: 0,
+                        padding: 0,
+                        height: '56px',
                       }}
                     >
                       <PiCaretLeft size={18} />
@@ -327,13 +318,12 @@ const TodayCalender = () => {
                             data-day-monthday={day.getDate()}
                             onClick={() => handleDayClick(day)}
                             style={{
-                              minWidth: '45px',
-                              height: '45px',
+                              minWidth: '50px',
+                              height: '56px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
                               cursor: 'pointer',
-                              borderRadius: '4px',
                               flexShrink: 0
                             }}
                           >
@@ -348,20 +338,11 @@ const TodayCalender = () => {
                       style={{
                         position: 'absolute',
                         right: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        zIndex: 10,
-                        background: 'white',
-                        border: 'none',
-                        padding: '5px',
-                        cursor: 'pointer',
-                        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                        borderRadius: '50%',
-                        width: '30px',
-                        height: '30px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                        width: '55px',
+                        margin: 0,
+                        top: 0,
+                        padding: 0,
+                        height: '56px',
                       }}
                     >
                       <PiCaretRight size={18} />
