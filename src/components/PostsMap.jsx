@@ -16,7 +16,12 @@ const defaultIcon = new L.Icon({
   popupAnchor: [1, -34],
   shadowSize: [41, 41],
 });
-
+function formatDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 // Default fallback (Beirut)
 const DEFAULT_CENTER = [33.8938, 35.5018];
 
@@ -27,6 +32,7 @@ const MarkerClusterGroup = ({ markers }) => {
   const map = useMap();
 
   useEffect(() => {
+    
     if (!markers || markers.length === 0) return;
 
     const mcg = L.markerClusterGroup({
@@ -39,6 +45,8 @@ const MarkerClusterGroup = ({ markers }) => {
     });
 
     markers.forEach((locationData) => {
+      console.log(locationData);
+      const date = locationData.dates?.[titleIndex];
       if (locationData.eventCount > 1) {
         const titles = locationData.titles || [locationData.title];
         
@@ -51,12 +59,14 @@ const MarkerClusterGroup = ({ markers }) => {
           
           // Use default icon EXPLICITLY
           const marker = L.marker([lat, lng], { icon: defaultIcon });
+
+          
           
           marker.bindPopup(`
             <div style="min-width: 200px;">
               <strong>${title}</strong>
               <br />
-              <small>${locationData.date ? new Date(locationData.date).toLocaleDateString() : ''}</small>
+              <small>${date ? formatDate(new Date(date.replace(' ', 'T'))) : ''}</small>
               <br /><br />
               <b>Location:</b> ${locationData.location_original || ''}
               ${titles.length > 1 ? `<br/><br/><em>${titles.length} events at this location</em>` : ''}
@@ -72,7 +82,7 @@ const MarkerClusterGroup = ({ markers }) => {
           <div style="min-width: 200px;">
             <strong>${locationData.title}</strong>
             <br />
-            <small>${locationData.date ? new Date(locationData.date).toLocaleDateString() : ''}</small>
+            <small>${date ? formatDate(new Date(date.replace(' ', 'T'))) : ''}</small>
             <br /><br />
             <b>Location:</b> ${locationData.location_original || ''}
           </div>
@@ -108,6 +118,7 @@ const MarkerClusterGroup = ({ markers }) => {
 };
 
 const PostsMap = ({ posts }) => {
+  console.log("Received posts for map:", posts);
   const [markers, setMarkers] = useState([]);
   const [center, setCenter] = useState(DEFAULT_CENTER);
 
@@ -129,21 +140,23 @@ const PostsMap = ({ posts }) => {
           const existing = locationMap.get(key);
           existing.eventCount += 1;
           existing.titles.push(post.title);
+          existing.dates.push(post.start_date); // ✅ ADD THIS
         } else {
           locationMap.set(key, {
             lat: parseFloat(post.lat),
             lng: parseFloat(post.lng),
             title: post.title,
             titles: [post.title],
+            dates: [post.start_date], // ✅ ADD THIS
             eventCount: 1,
             location_original: post.location,
-            date: post.start_date || post.created_at,
           });
         }
       }
     });
 
     const found = Array.from(locationMap.values());
+    console.log("Found locations:", found);
     setMarkers(found);
 
     if (found.length > 0) {
