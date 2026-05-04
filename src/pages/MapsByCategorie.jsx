@@ -44,6 +44,17 @@ const MapsByCategorie = () => {
   const [openGroups, setOpenGroups] = useState({});
   const [selectedGroups, setSelectedGroups] = useState({});
   const [selectedPoint, setSelectedPoint] = useState(null);
+  const [viewStack, setViewStack] = useState([]);
+  const pushView = (map) => {
+    if (!map) return;
+    setViewStack((prev) => [
+      ...prev,
+      {
+        center: map.getCenter(),
+        zoom: map.getZoom(),
+      },
+    ]);
+  };
  
  const mapRef = useRef(null);
  const [, force] = useState(0);
@@ -158,36 +169,35 @@ const markerNodes = React.useMemo(() => {
     setSelectedPoint(null);
   };
 
-const zoomToMarker = (p, groupName) => {
-  const map = mapRef.current;
-  const marker = markerRegistry.current[p.id];
-  console.log("MAP CALLED", map);
+  const zoomToMarker = (p, groupName) => {
+    const map = mapRef.current;
+    if (!map) return;
 
-  if (!map) {
-    console.warn("Map not ready yet");
-    return;
-  }
+    if (!p.lat || !p.lng) return;
 
-  const lat = +p.lat;
-  const lng = +p.lng;
+    // 🔥 SAVE BEFORE MOVE (SAFE)
+    pushView(map);
 
-  map.flyTo([lat, lng], 17, {
-    animate: true,
-    duration: 0.8,
-  });
+    const lat = +p.lat;
+    const lng = +p.lng;
 
-  setSelectedPoint({
-    name: p.title,
-    type: groupName,
-    lat,
-    lng,
-  });
-  // 👇 THIS is the missing piece
-  map.once("moveend", () => {
-    const marker = markerRegistry.current[p.id];
-    marker?.openPopup();
-  });
-};
+    map.flyTo([lat, lng], 17, {
+      animate: true,
+      duration: 0.8,
+    });
+
+    setSelectedPoint({
+      name: p.title,
+      type: groupName,
+      lat,
+      lng,
+    });
+
+    map.once("moveend", () => {
+      const marker = markerRegistry.current[p.id];
+      marker?.openPopup();
+    });
+  };
 
 const MapBinder = ({ setMap }) => {
   const map = useMap();
@@ -299,6 +309,36 @@ const MapBinder = ({ setMap }) => {
             </div>
 
             <div id="map">
+              {viewStack.length > 0 && (
+                <button
+                  onClick={() => {
+                    const map = mapRef.current;
+                    if (!map) return;
+
+                    const prev = viewStack.pop(); // IMPORTANT CHANGE
+                    if (!prev) return;
+
+                    setViewStack([...viewStack]);
+
+                    map.flyTo(prev.center, prev.zoom, {
+                      animate: true,
+                      duration: 0.8,
+                    });
+                  }}
+                  style={{
+                    position: "absolute",
+                    zIndex: 9999,
+                    
+                    left: 15,
+                    
+                    border: "1px solid #ccc",
+                    padding: "8px 12px",
+                    
+                  }}
+                >
+                  ⬅ Back
+                </button>
+              )}
               <MapContainer
                 center={defaultCenter}
                 closePopupOnClick={false}
@@ -311,6 +351,21 @@ const MapBinder = ({ setMap }) => {
                 <FitBounds groups={groups} selectedGroups={selectedGroups} />
                 <MapBinder setMap={setMap} />
                 <MarkerClusterGroup
+                  eventHandlers={{
+                    clusterclick: (cluster) => {
+                      const map = mapRef.current;
+                      if (!map) return;
+
+                      pushView(map);
+
+                      const bounds = cluster.layer.getBounds();
+
+                      map.fitBounds(bounds, {
+                        padding: [50, 50],
+                        maxZoom: 16,
+                      });
+                    }
+                  }}
                   ref={clusterRef}
                   chunkedLoading
                   showCoverageOnHover={false}
