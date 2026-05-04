@@ -46,7 +46,7 @@ const MarkerClusterGroup = ({ markers }) => {
 
     markers.forEach((locationData) => {
       console.log(locationData);
-      const date = locationData.dates?.[titleIndex];
+      
       if (locationData.eventCount > 1) {
         const titles = locationData.titles || [locationData.title];
         
@@ -60,7 +60,7 @@ const MarkerClusterGroup = ({ markers }) => {
           // Use default icon EXPLICITLY
           const marker = L.marker([lat, lng], { icon: defaultIcon });
 
-          
+          const date = locationData.dates?.[titleIndex];
           
           marker.bindPopup(`
             <div style="min-width: 200px;">
@@ -82,7 +82,7 @@ const MarkerClusterGroup = ({ markers }) => {
           <div style="min-width: 200px;">
             <strong>${locationData.title}</strong>
             <br />
-            <small>${date ? formatDate(new Date(date.replace(' ', 'T'))) : ''}</small>
+            <small>${locationData.date ? new Date(locationData.date).toLocaleDateString() : ''}</small>
             <br /><br />
             <b>Location:</b> ${locationData.location_original || ''}
           </div>
