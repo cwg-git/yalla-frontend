@@ -163,10 +163,10 @@ const ThisWeek = () => {
                                 name="tax_input[mec_category][]"
                                 id={`in-mec_category-${cat.id}`}
                                 checked={selectedCategories.includes(
-                                  cat.slugurl || cat.name
+                                 cat.name
                                 )}
                                 onChange={() =>
-                                  handleCategoryChange(cat.slugurl || cat.name)
+                                  handleCategoryChange(cat.name)
                                 }
                               />{" "}
                               {cat.name}
