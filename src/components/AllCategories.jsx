@@ -44,7 +44,7 @@ const AllCategories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="post-categories">
           <div className="container">
             <div className="title-block">
-              <h4>Post Categories</h4>
+              <h4>Blogs</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -77,7 +77,7 @@ const AllCategories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="event-categories">
           <div className="container">
             <div className="title-block">
-              <h4>Events Categories</h4>
+              <h4>Events</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -110,7 +110,7 @@ const AllCategories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="post-categories map-categories">
           <div className="container">
             <div className="title-block">
-            <h4>Map Categories</h4>
+            <h4>Timelines & Maps</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
