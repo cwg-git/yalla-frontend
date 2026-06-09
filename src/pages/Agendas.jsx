@@ -3,6 +3,7 @@ import { PiCaretLeft, PiCaretRight } from "react-icons/pi";
 import axios from "axios";
 import { env } from "../config";
 import Categories from "../components/Categories";
+import CmsPage from "./CmsPage";
 import dayjs from "dayjs";
 
 // ---------- Helper: format date as YYYY-MM-DD ----------
@@ -218,14 +219,8 @@ const Agendas = () => {
 
   return (
     <div>
-      <section className="inner-banner">
-                <div className="container">
-                    <div className="text-block">
-                        <h3><em>Our</em></h3>
-                        <h1><em>Agendas</em></h1>
-                    </div>
-                </div>
-        </section>
+      {/* Banner - From existing CMS Page */}
+      <CmsPage slug="agendas" titleFallback="Monthly Agenda">
         <div className="post-categories">
           <div className="container">
           {/* Month Navigator */}
@@ -283,7 +278,7 @@ const Agendas = () => {
         <section className="event-categories">
           <Categories type="events" />
         </section>
-      
+      </CmsPage>
     </div>
   );
 };

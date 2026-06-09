@@ -209,7 +209,7 @@ const MapBinder = ({ setMap }) => {
   return null;
 };
 
-  const defaultCenter = [33.8547, 35.8623];
+  const defaultCenter = [41.3874, 2.1686];
 
   return (
     <>
@@ -242,7 +242,7 @@ const MapBinder = ({ setMap }) => {
 
           <div className="map-block">
             <div id="sidebar">
-              <div className="filter-title">{category?.name || "Map Categories"}</div>
+              <div className="filter-title">{category?.name || "Guides"}</div>
 
               
 

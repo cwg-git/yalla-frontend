@@ -1085,3 +1085,59 @@ footer ul li, footer .our-links ul li{width:50%;}
 p[data-f-id="pbf"] {
   display: none !important;
 }
+
+
+/*29-05-2026*/
+.press .post-block .title-block h4{border:none;}
+.subscription-section{padding:50px 0;}
+.subscription-box {background: #fff;border-radius: 24px;padding: 50px;box-shadow: 0 10px 40px rgba(0,0,0,0.08);}
+.subscription-left h2,
+.subscription-right h2 {font-size: 28px;margin-bottom: 30px;}
+.subscription-section .col-md-6{padding-right:50px; border-right:1px solid rgba(0, 0, 0, 0.1);}
+.subscription-section .col-md-6:nth-child(2){padding-left:50px; border:none; padding-right:15px;}
+.subscription-section  h4{color:#6c757d; font-size:16px; line-height:18px; padding:0; margin:0 0 15px; font-weight:600;}
+.option-card {display: flex;align-items: flex-start;gap: 15px;border: 2px solid #e5e7eb;padding: 25px;border-radius: 18px;margin-bottom: 20px;cursor: pointer;transition: 0.3s ease;}
+.option-card:hover {border-color: var( --e-global-color-primary );transform: translateY(-2px);}
+.option-card.active {border-color: var( --e-global-color-primary );background: #fef3f4;}
+.option-card input {margin-top: 6px;width: 18px;height: 18px;}
+.option-card h3 {font-size: 20px;margin-bottom: 5px;}
+.option-card p {color: #6b7280;font-size: 15px; line-height:17px; padding:0;}
+.subscription-right .form-group {margin-bottom: 25px;}
+.subscription-right .form-group label {display: block;margin-bottom: 10px;font-weight: 600;}
+.subscription-right .form-group input {width: 100%;height: 60px;border: 2px solid #e5e7eb;border-radius: 14px;padding: 0 20px;font-size: 16px;outline: none;}
+.subscription-right .form-group input:focus {border-color: var( --e-global-color-primary );}
+.option-card input[type="checkbox"],
+.option-card input[type="radio"] {accent-color: #B12129;}
+
+.subscribe-btn {width: 100%;font-size:16px; line-height:18px; color:#fff; background:#B12129; padding:10px 44px 10px 40px; border-radius:35px; border:none; transition:ease-in-out all 300ms; min-height:47px; font-weight:500; }
+.subscribe-btn:hover{background:#000;}
+
+/* WHY SUBSCRIBE SECTION */
+.why-subscribe {background: #fef3f4;}
+.why-subscribe .col-lg-3{border-right:1px solid rgba(0,0,0,.1);}
+.why-subscribe .col-lg-3:last-child{border:none;}
+.why-subscribe h4{color:#000; font-size:20px; line-height:22px; padding:0; margin:0 0 15px; font-weight:600;}
+
+/* PRIVACY BOX */
+.privacy {margin-top: 30px; display:flex; gap:15px; align-items: start;}
+.privacy-icon {flex:0 0 60px;width: 60px;height: 60px;background: #fef3f4;border-radius: 50%;display: flex;align-items: center;justify-content: center;margin: auto;box-shadow: 0 10px 30px rgba(43, 89, 255, 0.10);position: relative;z-index: 2;margin:0;}
+.privacy-content p {font-size: 16px;color: #4b5563;line-height: 1.8;}
+
+.subscribe p{padding:0; margin:0 0 5px;}
+.subscribe .form-control{border:1px solid rgba(255,255,255,.3); color:#fff; font-size:16px; line-height:18px; background:transparent; height:36px; margin:0 0 10px;}
+.subscribe .form-control:focus {border-color:rgba(255,255,255,.6);box-shadow: none;color: #fff;}
+.subscribe .form-control::placeholder {color: #fff;opacity: 1;}
+.subscribe .form-control::-webkit-input-placeholder {color: #fff;}
+.subscribe .form-control:-ms-input-placeholder {color: #fff;}
+.subscribe .form-control::-ms-input-placeholder {color: #fff;}
+.subscribe .form-control option {color: #000;}
+.subscribe .btn-submit{font-size: 16px;line-height: 18px;color: #B12129;background: #fff;padding: 10px 44px 10px 40px;border-radius: 35px;border: none;ransition: ease-in-out all 300ms;min-height: 47px;font-weight: 500;}
+.subscribe .btn-submit:hover{color:#fff; background:#000;}
+html{overflow-x:hidden !important;}
+
+@media (max-width: 767px) {.subscription-left h2, .subscription-right h2 {font-size: 22px;}
+.option-card {padding: 20px;}
+.subscription-section .col-md-6{padding-right:15px; border:none;}
+.subscription-section .col-md-6:nth-child(2){padding-left:15px; margin-top:20px;}
+.why-subscribe .col-lg-3{border:none;}
+}

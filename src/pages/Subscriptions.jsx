@@ -131,20 +131,8 @@ const SubscriptionForm = () => {
                   <div className="privacy">
                     <div className="privacy-icon">
                       <svg width="30" height="30" viewBox="0 0 24 24" fill="none">
-                        <path
-                          d="M12 2L4 5V11C4 16.5 7.8 21.4 12 22C16.2 21.4 20 16.5 20 11V5L12 2Z"
-                          stroke="#db7521"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                        <path
-                          d="M9.5 12L11.5 14L15 10.5"
-                          stroke="#db7521"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
+                                  <path d="M12 2L4 5V11C4 16.5 7.8 21.4 12 22C16.2 21.4 20 16.5 20 11V5L12 2Z" stroke="#B12129" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                  <path d="M9.5 12L11.5 14L15 10.5" stroke="#B12129" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
                       </svg>
                     </div>
                     <div className="privacy-content">

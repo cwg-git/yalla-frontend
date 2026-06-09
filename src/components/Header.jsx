@@ -115,11 +115,11 @@ const Header = () => {
                   <li className={isActive('this-week')}>
                     <a href="/this-week">This Week</a>
                   </li>
-                  <li className={isActive('agendas')}>
-                    <a href="/agendas">Agendas</a>
+                  <li className={isActive('press')}>
+                    <a href="/press">Press</a>
                   </li>
-                  <li className={isActive('legacy')}>
-                    <a href="/legacy">Legacy</a>
+                  <li className={isActive('subscriptions')}>
+                    <a href="/subscriptions">Subscription</a>
                   </li>
                 </ul>
               </div>

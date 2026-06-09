@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "../config";
 import { useParams } from "react-router-dom";
 import Categories from "../components/Categories";
-import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
 import dayjs from "dayjs";
 
@@ -247,8 +246,6 @@ const EventsByCategoorie = () => {
           <PostsMap posts={weekPosts} />
         </div>
       </section>
-
-      <LegacyBlock />
     </div>
   );
 };

@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "../config";
 import { Link, useSearchParams } from "react-router-dom";
 import Categories from "../components/Categories";
-import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
 import dayjs from "dayjs";
 
@@ -483,7 +482,6 @@ const SearchPage = () => {
         </section>
       )}
 
-      <LegacyBlock />
     </div>
   );
 };

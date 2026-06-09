@@ -6,7 +6,6 @@ import {
   PiClock,
 } from "react-icons/pi";
 import axios from "axios";
-import LegacyBlock from "../components/LegacyBlock";
 import Categories from "../components/Categories";
 import { env } from "../config";
 import dayjs from "dayjs";
@@ -121,14 +120,7 @@ const LegacyPage = () => {
   return (
     <div>
       {/* Banner */}
-     <section className="inner-banner">
-                     <div className="container">
-                         <div className="text-block">
-                             <h3><em>Our</em></h3>
-                             <h1><em>Legacy</em></h1>
-                         </div>
-                     </div>
-                 </section>
+     
       <div>
         <section className="testimonial text-center">
           <div className="container">
@@ -163,9 +155,6 @@ const LegacyPage = () => {
           <Categories type="maps" />
         </section>
       </div>
-      <section>
-        <LegacyBlock />
-      </section>
     </div>
   );
 };

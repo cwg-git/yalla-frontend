@@ -11,7 +11,7 @@ import Categories from "../components/Categories";
 import { env } from "../config";
 import dayjs from "dayjs";
 
-
+import CmsPage from "./CmsPage";
 
 // ---------- Helper functions (unchanged) ----------
 function getWeekNumber(date) {
@@ -299,19 +299,9 @@ const ThisWeek = () => {
 
   return (
     <div>
-      {/* Banner */}
-      <section className="inner-banner">
-        <div className="container">
-          <div className="text-block">
-            <h3>
-              <em>This</em>
-            </h3>
-            <h1>
-              <em>Week</em>
-            </h1>
-          </div>
-        </div>
-      </section>
+      {/* Banner - From existing CMS Page */}
+      <CmsPage slug="thisweek" titleFallback="This Week">
+
       <div>
         <section className="thisweek">
           <div className="container">
@@ -331,7 +321,7 @@ const ThisWeek = () => {
       <section>
         <LegacyBlock />
       </section>
-      
+      </CmsPage>
     </div>
   );
 };

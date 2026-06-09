@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "../config";
 import { useParams, Link } from "react-router-dom";
 import Categories from "../components/AllCategories";
-import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
 
 // Simple SVG Icon Components
@@ -103,8 +102,6 @@ const AllMapsByCategory = () => {
             <div className="clearfix" />
           </div>
         </section>
-        
-        <LegacyBlock />
       </div>
     );
   }
@@ -140,9 +137,7 @@ const AllMapsByCategory = () => {
             <div className="clearfix" />
           </div>
         </section>
-        
-        <LegacyBlock />
-      </div>
+        </div>
     );
   }
 
@@ -174,9 +169,7 @@ const AllMapsByCategory = () => {
             <div className="clearfix" />
           </div>
         </section>
-        
-        <LegacyBlock />
-      </div>
+        </div>
     );
   }
 
@@ -260,8 +253,6 @@ const AllMapsByCategory = () => {
           <div className="clearfix" />
         </div>
       </section>
-
-      <LegacyBlock />
     </div>
   );
 };

@@ -3,7 +3,6 @@ import axios from "axios";
 import { env } from "../config";
 import { useParams } from "react-router-dom";
 import Categories from "../components/Categories";
-import LegacyBlock from "../components/LegacyBlock";
 import PostsMap from "../components/PostsMap";
 const PostsByCategoorie = () => {
   const params = useParams();
@@ -73,13 +72,13 @@ const PostsByCategoorie = () => {
                       <div className="post-box">
                         <div className="post-image position-relative">
                           {" "}
-                          <div class="img-block">
+                          <div className="img-block">
                             <figure className="thumbnail zoom-effect">
                               <a href={`/post/${post.slug}`}>
                                 <img src={post.image} alt={post.title} />
                               </a>
                             </figure>
-                            <div class="bordered-effect">
+                            <div className="bordered-effect">
                               <a
                                 href={`/post/${post.slug}`}
                                 aria-label={post.title}
@@ -109,13 +108,13 @@ const PostsByCategoorie = () => {
                       <div className="post-box">
                         <div className="post-image position-relative">
                           {" "}
-                          <div class="img-block">
+                          <div className="img-block">
                             <figure className="thumbnail zoom-effect">
                               <a href={`/post/${post.slug}`}>
                                 <img src={post.image} alt={post.title} />
                               </a>
                             </figure>
-                            <div class="bordered-effect">
+                            <div className="bordered-effect">
                               <a
                                 href={`/post/${post.slug}`}
                                 aria-label={post.title}
@@ -145,13 +144,13 @@ const PostsByCategoorie = () => {
                       <div className="post-box">
                         <div className="post-image position-relative">
                           {" "}
-                          <div class="img-block">
+                          <div className="img-block">
                             <figure className="thumbnail zoom-effect">
                               <a href={`/post/${post.slug}`}>
                                 <img src={post.image} alt={post.title} />
                               </a>
                             </figure>
-                            <div class="bordered-effect">
+                            <div className="bordered-effect">
                               <a
                                 href={`/post/${post.slug}`}
                                 aria-label={post.title}
@@ -259,7 +258,6 @@ const PostsByCategoorie = () => {
           <PostsMap posts={posts} />
         </div>
       </section>
-      <LegacyBlock />
     </div>
   );
 };

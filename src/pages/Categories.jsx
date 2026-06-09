@@ -1,5 +1,4 @@
 import React from 'react';
-import LegacyBlock from '../components/LegacyBlock';
 import Categories from '../components/Categories';
 const CategoriesPage = () => {
 
@@ -18,8 +17,6 @@ const CategoriesPage = () => {
             <Categories type="posts" />
             <Categories type="events" />
             <Categories type="maps" />
- 
-                <LegacyBlock />
             </div>
         </div>
     );

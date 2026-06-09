@@ -6,7 +6,6 @@ import {
   PiClock,
 } from "react-icons/pi";
 import axios from "axios";
-import LegacyBlock from "../components/LegacyBlock";
 import Categories from "../components/Categories";
 import { env } from "../config";
 
@@ -398,9 +397,6 @@ const YesterdayCalender = () => {
           <Categories type="events" />
         </section>
       </div>
-      <section>
-        <LegacyBlock />
-      </section>
     </div>
   );
 };
