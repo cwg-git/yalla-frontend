@@ -1,0 +1,32 @@
+{
+  "files": {
+    "main.css": "/static/css/main.bbc0a70c.css",
+    "main.js": "/static/js/main.786bff04.js",
+    "static/js/453.47b51113.chunk.js": "/static/js/453.47b51113.chunk.js",
+    "static/media/fontawesome-webfont.svg?v=4.7.0": "/static/media/fontawesome-webfont.c1e38fd9e0e74ba58f7a.svg",
+    "static/media/fontawesome-webfont.eot": "/static/media/fontawesome-webfont.8b43027f47b20503057d.eot",
+    "static/media/fontawesome-webfont.ttf?v=4.7.0": "/static/media/fontawesome-webfont.1e59d2330b4c6deb84b3.ttf",
+    "static/media/fontawesome-webfont.woff?v=4.7.0": "/static/media/fontawesome-webfont.f691f37e57f04c152e23.woff",
+    "static/media/fontawesome-webfont.woff2?v=4.7.0": "/static/media/fontawesome-webfont.20fd1704ea223900efa9.woff2",
+    "static/media/Kahlil-Gibran-Portrait.webp": "/static/media/Kahlil-Gibran-Portrait.7b5401a2d34ad47e34f5.webp",
+    "static/media/logo.jpg": "/static/media/logo.1b3d5336a237789b58a2.jpg",
+    "static/media/box-bg3.webp": "/static/media/box-bg3.2ffc1ab925ea4fd78bc3.webp",
+    "static/media/box-bg1.webp": "/static/media/box-bg1.34589e6b74933c7994e3.webp",
+    "index.html": "/index.html",
+    "static/media/box-bg2.webp": "/static/media/box-bg2.f8a262f9aa357eb7ca9d.webp",
+    "static/media/icon2.webp": "/static/media/icon2.63b6240f0950fc8783f5.webp",
+    "static/media/icon4.webp": "/static/media/icon4.b64a8dc5bfadc86037fe.webp",
+    "static/media/icon3.webp": "/static/media/icon3.7dd35cc69c67d103fb65.webp",
+    "static/media/icon1.webp": "/static/media/icon1.7a0dee525535f889fbdb.webp",
+    "static/media/en.webp": "/static/media/en.135a09162ef98d80fbb1.webp",
+    "static/media/ar.webp": "/static/media/ar.ed988a63cac1900b3f6d.webp",
+    "static/media/fr.webp": "/static/media/fr.ccadcaf58ac26b26e3d8.webp",
+    "main.bbc0a70c.css.map": "/static/css/main.bbc0a70c.css.map",
+    "main.786bff04.js.map": "/static/js/main.786bff04.js.map",
+    "453.47b51113.chunk.js.map": "/static/js/453.47b51113.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.bbc0a70c.css",
+    "static/js/main.786bff04.js"
+  ]
+}

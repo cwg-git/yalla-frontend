@@ -129,7 +129,7 @@ html { overflow-x:hidden;
 .post-block .title-block h4{font-family: 'GT Walsheim Pro'; font-weight:500;font-size: 18px;font-weight: 400;color: #373737; padding:0; margin:0 0 30px;}
 .post-block .post-box{margin-bottom:30px;}
 .post-block .post-box .thumbnail{margin:0;}
-.post-block .post-box .thumbnail img{width:auto; height:auto;}
+.post-block .post-box .thumbnail img{width:100%; height:auto;}
 .post-block .post-box .post-image .post-content .post-title{padding:10px 20px 10px 20px; z-index:999; background:#B12129;border-top: 4px solid #fff; border-right: 4px solid #fff; top: -30px; position: relative;width: 90%;}
 .post-block .post-box .post-image .post-content .post-title a{font-family: "GT Walsheim", Sans-serif; display:inline-block; font-size: 17px; line-height:20px; color:#fff; font-weight: 400;}
 .post-block .post-box .post-image .post-content .post-category{padding-top:10px; margin-top:-25px;  }

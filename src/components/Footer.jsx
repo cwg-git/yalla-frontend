@@ -122,7 +122,7 @@ const Footer = () => {
         {/* Bottom Block */}
         <div className="bottom-block d-flex justify-content-between">
           <p>© Yallalebanon.com</p>
-          <a href="/privacy-policy">Privacy Policy</a>
+          {/* <a href="/privacy-policy">Privacy Policy</a> */}
         </div>
       </div>
     </footer>

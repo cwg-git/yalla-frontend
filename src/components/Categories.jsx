@@ -31,7 +31,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
         .get(`${env.baseUrl}/api/categories/maps`)
         .then((response) => setCategories([...response.data.categories]))
         .catch((error) =>
-          console.error("Error fetching map categories:", error)
+          console.error("Error fetching Timelines & Maps:", error)
         );
     }
   }, [type]);
@@ -44,7 +44,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="post-categories">
           <div className="container">
             <div className="title-block">
-              <h4>Post Categories</h4>
+              <h4>Blogs</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -77,7 +77,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="event-categories">
           <div className="container">
             <div className="title-block">
-              <h4>Events Categories</h4>
+              <h4>Events</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -111,7 +111,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
         <section className="post-categories map-categories">
           <div className="container">
             <div className="title-block">
-            <h4>{isLegacy ? "All available Legends maps" : "Map Categories"}</h4>
+            <h4>{isLegacy ? "All available Legends maps" : "Timelines & Maps"}</h4>
             </div>
             <div className="row">
               {categories.map((category) => (
@@ -146,7 +146,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
     if (type === "posts") {
       return (
         <div className="side-menu">
-          <h4>Posts Categories</h4>
+          <h4>Blogs</h4>
           <ul>
             {categories.map((cat) => (
               <li
@@ -162,7 +162,7 @@ const Categories = ({ type, direction = "horizontal", activeItem }) => {
     } else if (type === "events") {
       return (
         <div className="side-menu">
-          <h4>Events Categories</h4>
+          <h4>Events</h4>
           <ul>
             {categories.map((cat) => (
               <li 

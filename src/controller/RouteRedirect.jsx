@@ -11,6 +11,8 @@ import About from "../pages/About";
 import Contact from "../pages/Contact";
 import Subscriptions from "../pages/Subscriptions";
 
+import Press from "../pages/Press";
+
 import SinglePost from "../pages/SinglePost";
 import SingleEvent from "../pages/SingleEvent";
 
@@ -47,6 +49,7 @@ const RedirectComponent = () => {
     "all-maps": <AllMapsByCategory />,
     "search": <SearchPage />,
     "subscriptions": <Subscriptions />,
+    "press": <Press />,
 
     // Single pages
     post: key ? <SinglePost /> : null,
