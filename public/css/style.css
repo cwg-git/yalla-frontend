@@ -318,6 +318,11 @@ footer p, footer a{color:#CECECE;}
 .timeline .block .inner:after{content: "";position: absolute;width: 15px;height: 15px;right: -8px;background: var(--e-global-color-primary);border-radius: 50%;top:-13px;  }
 
 
+.timeline .block .btn-block{width: 50%;position: absolute;bottom: 15px;right: 0;}
+.timeline .block:nth-child(2n) .btn-block{left:0;}
+.timeline .block .btn-block .programs-btn{position: absolute;bottom: 15px;width: fit-content; font-size: 16px;line-height: 18px;color: #fff;background: #e77012;padding: 10px 44px 10px 40px;border-radius: 35px;border: none;transition: ease-in-out all 300ms;font-weight: 500; left: 0;right: 0;margin: 0 auto;}
+.timeline .block .btn-block .programs-btn:hover{background: #000;}
+
 .timeline .block:nth-child(2n) .inner:before{ left:-15px; right:inherit; background:#000;  }
 .timeline .block:nth-child(2n) .inner:after{left: -8px; right:inherit; background:#000;  }
 
@@ -720,6 +725,8 @@ footer ul li, footer .our-links ul li{width:33.33%;}
 .timeline .block .inner::before {left: -15px;right: inherit;}
 .timeline .block .inner::after {left: -8px;right: inherit;}
 .timeline .block{padding-left:20px;}
+.timeline .block .btn-block{width:100%; position:inherit; bottom: inherit; right: inherit;}
+.timeline .block .btn-block .programs-btn{position:inherit; display:inline-block; margin-top:30px;}
 .timeline .block{display: table-row; }
 }
 

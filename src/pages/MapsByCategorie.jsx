@@ -433,6 +433,9 @@ const MapBinder = ({ setMap }) => {
                   {item.thirdline && (<li><i className="fa-solid fa-clipboard"></i> {item.thirdline}</li>)}
                 </ul>
               </div>
+              <div className="btn-block">
+                <a className="programs-btn" href={`/search?q=${encodeURIComponent(item.headline)}`}>Programs</a>
+              </div>
             </div>
           ))}
         </div>
