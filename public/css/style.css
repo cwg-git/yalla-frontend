@@ -311,7 +311,7 @@ footer p, footer a{color:#CECECE;}
 
 
 .timeline{padding:50px 0;}
-.timeline .block{max-width: 100%; margin: 0 auto 30px; display: table; width:100%;}
+.timeline .block{max-width: 100%; margin: 0 auto 30px; display: table; width:100%; position: relative;}
 .timeline .block h2{color:var(--e-global-color-primary); text-align:center;padding:0; margin:0 0 40px;}
 .timeline .block .inner{width:50%; position:relative; padding-right:30px; float:left; border-right:2px solid var(--e-global-color-primary); }
 .timeline .block .inner:before{ content:""; position:absolute; width:30px; height:30px; top:-20px; right:-15px; background:var(--e-global-color-primary); border-radius:50%; opacity:.2;  }
