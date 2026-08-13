@@ -434,7 +434,7 @@ const MapBinder = ({ setMap }) => {
                 </ul>
               </div>
               <div className="btn-block">
-                <a className="programs-btn" href={`/search?q=${encodeURIComponent(item.headline)}`}>Programs</a>
+                <a className="programs-btn" href={`/search?q=${encodeURIComponent(item.headline)}`}>More</a>
               </div>
             </div>
           ))}
