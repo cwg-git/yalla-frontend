@@ -4,10 +4,12 @@ import { env } from "../config";
 import { useParams } from "react-router-dom";
 import Categories from "../components/Categories";
 import PostsMap from "../components/PostsMap";
+import PassiveCategoryMap from "../components/PassiveCategoryMap";
 const PostsByCategoorie = () => {
   const params = useParams();
   const { key } = params;
   const [category, setCategory] = useState(null);
+  const [mapCategorySlug, setMapCategorySlug] = useState(null);
   const [posts, setPosts] = useState([]);
   const [pageData, setPageData] = useState({
     current_page: 0,
@@ -35,6 +37,7 @@ const PostsByCategoorie = () => {
       .then((response) => {
         console.log(response.data);
         setCategory(response.data.category);
+        setMapCategorySlug(response.data.map_category_slug || null);
         setPosts(response.data.posts.data); // since Laravel paginate wraps data
         setPageData({
           current_page: response.data.posts.current_page,
@@ -255,7 +258,15 @@ const PostsByCategoorie = () => {
       </section> */}
       <section className="passive-map">
         <div className="container">
-          <PostsMap posts={posts} />
+          {mapCategorySlug ? (
+            <PassiveCategoryMap
+              mapSlug={mapCategorySlug}
+              eventSlug={key}
+              guideSlug={mapCategorySlug}
+            />
+          ) : (
+            <PostsMap posts={posts} />
+          )}
         </div>
       </section>
     </div>

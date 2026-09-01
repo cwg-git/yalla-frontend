@@ -320,7 +320,7 @@ footer p, footer a{color:#CECECE;}
 
 .timeline .block .btn-block{width: 50%;position: absolute;bottom: 15px;right: 0;}
 .timeline .block:nth-child(2n) .btn-block{left:0;}
-.timeline .block .btn-block .programs-btn{position: absolute;bottom: 15px;width: fit-content; font-size: 16px;line-height: 18px;color: #fff;background: #e77012;padding: 10px 44px 10px 40px;border-radius: 35px;border: none;transition: ease-in-out all 300ms;font-weight: 500; left: 0;right: 0;margin: 0 auto;}
+.timeline .block .btn-block .programs-btn{position: absolute;bottom: 15px;width: fit-content; font-size: 16px;line-height: 18px;color: #fff;background: var(--e-global-color-primary);padding: 10px 44px 10px 40px;border-radius: 35px;border: none;transition: ease-in-out all 300ms;font-weight: 500; left: 0;right: 0;margin: 0 auto;}
 .timeline .block .btn-block .programs-btn:hover{background: #000;}
 
 .timeline .block:nth-child(2n) .inner:before{ left:-15px; right:inherit; background:#000;  }

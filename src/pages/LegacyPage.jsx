@@ -7,6 +7,7 @@ import {
 } from "react-icons/pi";
 import axios from "axios";
 import Categories from "../components/Categories";
+import LegacyBlock from "../components/LegacyBlock";
 import { env } from "../config";
 import dayjs from "dayjs";
 
@@ -145,12 +146,7 @@ const LegacyPage = () => {
             </div>
           </div>
         </section>
-        <section className="post-categories">
-          <Categories type="posts" />
-        </section>
-        <section className="event-categories">
-            <Categories type="events" />
-        </section>
+        <LegacyBlock />
         <section className="post-categories map-categories">
           <Categories type="maps" />
         </section>
