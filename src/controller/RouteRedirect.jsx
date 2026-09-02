@@ -40,6 +40,7 @@ const RedirectComponent = () => {
     // Legacy filters
     yesterday: <Legacy type="yesterday" />,
     today: <Today />,
+    "today-legacy": <Legacy type="today-legacy" />,
     forever: <Legacy type="forever" />,
 
     // Category pages
