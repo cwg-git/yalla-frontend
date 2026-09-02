@@ -1,6 +1,6 @@
 import React from "react";
 import CmsPage from "./CmsPage";
-import Categories from "../components/Categories";
+import YesterdayCalender from "./YesterdayCalender";
 
 const Yesterday = () => {
   return (
@@ -30,17 +30,8 @@ const Yesterday = () => {
           </div>
         </section>
 
-        <section className="text-center" style={{ padding: "40px 0" }}>
-          <div className="container">
-            <p style={{ fontSize: "18px", fontStyle: "italic", margin: "20px 0" }}>
-              Text we will insert soon, explaining what the Yesterday page consist of and how it works with the timeline.
-            </p>
-          </div>
-        </section>
+        <YesterdayCalender />
 
-        <section className="post-categories map-categories">
-          <Categories type="maps" />
-        </section>
       </CmsPage>  
     </div>
   );

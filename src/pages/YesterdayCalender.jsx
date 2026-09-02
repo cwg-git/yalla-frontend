@@ -25,8 +25,10 @@ const YesterdayCalender = () => {
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const yesterday = new Date();
+  yesterday.setDate(yesterday.getDate() - 1);
   const [currentWeekStart, setCurrentWeekStart] = useState(
-    getStartOfWeek(new Date())
+    getStartOfWeek(yesterday)
   );
 
   // Fetch categories on mount
@@ -124,7 +126,7 @@ const YesterdayCalender = () => {
       <div>
         <section className="thisweek">
           <div className="container">
-            <h4>Today Events by Category</h4>
+            <h4>Yesterday Events by Category</h4>
             <div id="mec_skin_38523" className="mec-wrap colorskin-custom">
               <form
                 id="mec_search_form_38523"
