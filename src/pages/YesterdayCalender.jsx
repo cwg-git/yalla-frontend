@@ -124,7 +124,7 @@ const YesterdayCalender = () => {
       <div>
         <section className="thisweek">
           <div className="container">
-            <h4>Yesterday Events by Category</h4>
+            <h4>Today Events by Category</h4>
             <div id="mec_skin_38523" className="mec-wrap colorskin-custom">
               <form
                 id="mec_search_form_38523"

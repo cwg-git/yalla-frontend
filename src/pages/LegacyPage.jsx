@@ -123,29 +123,6 @@ const LegacyPage = () => {
       {/* Banner */}
      
       <div>
-        <section className="testimonial text-center">
-          <div className="container">
-            <h3>The Prophet 1923</h3>
-            <h2>
-              <em>
-                “Yesterday is but today’s memory, and tomorrow is today’s dream.”
-              </em>
-            </h2>
-
-            <div className="d-flex">
-              <img
-                className="img-circle"
-                src="images/Kahlil-Gibran-Portrait.webp"
-                alt="Khalil Gibran"
-              />
-
-              <div className="name-designation">
-                <h4>Khalil Gibran</h4>
-                <h5>January 6, 1883 – April 10, 1931</h5>
-              </div>
-            </div>
-          </div>
-        </section>
         <LegacyBlock />
         <section className="post-categories map-categories">
           <Categories type="maps" />

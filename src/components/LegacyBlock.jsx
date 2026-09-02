@@ -32,11 +32,11 @@ const LegacyBlock = () => {
                     </div>
                     <div className="col-lg-3 col-sm-4 col-xs-4">
                         <div className="legacy-box">
-                            <a href="/legacy/forever">
+                            <a href="/forever">
                                 <img src={BoxBg3} alt="Forever" />
                             </a>
                             <h3>
-                                <a href="/legacy/forever">Forever</a>
+                                <a href="/forever">Forever</a>
                             </h3>
                         </div>
                     </div>
