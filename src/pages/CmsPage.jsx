@@ -48,11 +48,13 @@ const CmsPage = ({ slug, titleFallback, children }) => {
             </div>
           </div>
         </section>
-        <section className="about-us">
-          <div className="container">
-            <p>{error || "This page is not available yet."}</p>
-          </div>
-        </section>
+        {!children && (
+          <section className="about-us">
+            <div className="container">
+              <p>{error || "This page is not available yet."}</p>
+            </div>
+          </section>
+        )}
         {children}
       </div>
     );

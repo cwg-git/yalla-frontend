@@ -4,7 +4,9 @@ import { useParams } from "react-router-dom";
 import Home from "../pages/Home";
 import ThisWeek from "../pages/ThisWeek";
 import Today from "../pages/Today";
+import TodayLegacy from "../pages/TodayLegacy";
 import Yesterday from "../pages/Yesterday";
+import Forever from "../pages/Forever";
 import Legacy from "../pages/Legacy";
 import Categories from "../pages/Categories";
 import Agendas from "../pages/Agendas";
@@ -41,8 +43,8 @@ const RedirectComponent = () => {
     // Legacy filters
     yesterday: <Yesterday />,
     today: <Today />,
-    "today-legacy": <Legacy type="today-legacy" />,
-    forever: <Legacy type="forever" />,
+    "today-legacy": <TodayLegacy />,
+    forever: <Forever />,
 
     // Category pages
     "event-category": <EventsByCategoorie />,

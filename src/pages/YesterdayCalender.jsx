@@ -395,9 +395,6 @@ const YesterdayCalender = () => {
             </div>
           </div>
         </section>
-        <section className="event-categories">
-          <Categories type="events" />
-        </section>
       </div>
     </div>
   );

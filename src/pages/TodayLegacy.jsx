@@ -1,12 +1,12 @@
 import React from "react";
 import CmsPage from "./CmsPage";
-import YesterdayCalender from "./YesterdayCalender";
+import TodayCalender from "./TodayCalender";
 
 const TodayLegacy = () => {
   return (
     <div>
       <CmsPage slug="today-legacy" titleFallback="Today">
-        <YesterdayCalender />
+        <TodayCalender />
       </CmsPage>
     </div>
   );
