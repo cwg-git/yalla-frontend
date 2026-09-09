@@ -5,9 +5,9 @@ import { env } from "../config";
 import PostsMap from "../components/PostsMap";
 
 const Press = () => {
-  // Replace these with your actual category slugs or IDs
-  const TRADITIONAL_CATEGORY_KEY = "traditional"; // or numeric ID like 1
-  const POPULAR_CATEGORY_KEY = "popular";        // or numeric ID like 2
+  // Actual category slugs from API: "traditional-popular" and "press"
+  const TRADITIONAL_CATEGORY_KEY = "traditional-popular";
+  const PRESS_CATEGORY_KEY = "press";
 
   const [traditionalPosts, setTraditionalPosts] = useState([]);
   const [popularPosts, setPopularPosts] = useState([]);
@@ -19,18 +19,28 @@ const Press = () => {
       setLoading(true);
       setError(null);
       try {
-        // Fetch Traditional category posts
-        const tradRes = await axios.get(
-          `${env.baseUrl}/api/posts/${TRADITIONAL_CATEGORY_KEY}`
-        );
-        // Fetch Popular category posts
-        const popRes = await axios.get(
-          `${env.baseUrl}/api/posts/${POPULAR_CATEGORY_KEY}`
-        );
+        const [tradRes, pressRes] = await Promise.allSettled([
+          axios.get(`${env.baseUrl}/api/posts/${TRADITIONAL_CATEGORY_KEY}`),
+          axios.get(`${env.baseUrl}/api/posts/${PRESS_CATEGORY_KEY}`)
+        ]);
 
-        // Adjust according to your API response structure
-        setTraditionalPosts(tradRes.data.posts?.data || tradRes.data.posts || []);
-        setPopularPosts(popRes.data.posts?.data || popRes.data.posts || []);
+        let hasData = false;
+
+        if (tradRes.status === "fulfilled" && tradRes.value?.data) {
+          const tData = tradRes.value.data.posts?.data || tradRes.value.data.posts || [];
+          setTraditionalPosts(tData);
+          if (tData.length) hasData = true;
+        }
+
+        if (pressRes.status === "fulfilled" && pressRes.value?.data) {
+          const pData = pressRes.value.data.posts?.data || pressRes.value.data.posts || [];
+          setPopularPosts(pData);
+          if (pData.length) hasData = true;
+        }
+
+        if (!hasData && tradRes.status === "rejected" && pressRes.status === "rejected") {
+          setError("Failed to load posts.");
+        }
       } catch (err) {
         console.error(err);
         setError("Failed to load posts.");
@@ -152,19 +162,19 @@ const Press = () => {
         <div className="container">
           <div className="post-block">
             <div className="title-block">
-              <h4>Traditional Posts</h4>
+              <h4>Traditional & Popular Posts</h4>
             </div>
             <PostGrid posts={traditionalPosts} />
           </div>
         </div>
       </section>
 
-      {/* Popular Posts Section */}
+      {/* Press Posts Section */}
       <section className="thisweek event-category press">
         <div className="container">
           <div className="post-block">
             <div className="title-block">
-              <h4>Popular posts</h4>
+              <h4>Press Releases</h4>
             </div>
             <PostGrid posts={popularPosts} />
           </div>
