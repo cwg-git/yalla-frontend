@@ -12,6 +12,8 @@ import Categories from "../pages/Categories";
 import Agendas from "../pages/Agendas";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
+import PrivacyPolicy from "../pages/PrivacyPolicy";
+import CmsPage from "../pages/CmsPage";
 import Subscriptions from "../pages/Subscriptions";
 
 import Press from "../pages/Press";
@@ -39,6 +41,7 @@ const RedirectComponent = () => {
     agendas: <Agendas />,
     "about-us": <About />,
     contact: <Contact />,
+    "privacy-policy": <PrivacyPolicy />,
 
     // Legacy filters
     yesterday: <Yesterday />,
@@ -66,6 +69,14 @@ const RedirectComponent = () => {
 
   // If URL is just domain.com/
   if (!object) return <Home />;
+
+  if (!routeMap[object]) {
+    return (
+      <Suspense fallback={<div />}>
+        <CmsPage slug={object} titleFallback={object} />
+      </Suspense>
+    );
+  }
 
   return (
     <Suspense fallback={<div />}>
